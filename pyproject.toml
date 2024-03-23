@@ -5,13 +5,21 @@ description = "后端共享组件"
 authors = ["yezi <yehaowei20060411@qq.com>"]
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/FHU-yezi/sshared"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Typing :: Typed"
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+msgspec = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.3.4"
-pyright = "^1.1.355"
+ruff = "^0.3.0"
+pyright = "^1.1.0"
 
 [build-system]
 requires = ["poetry-core"]
