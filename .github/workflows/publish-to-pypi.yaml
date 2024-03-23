@@ -1,0 +1,27 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  static-check:
+    uses: ./.github/workflows/static-check.yaml
+  publish-to-pypi:
+    runs-on: ubuntu-latest
+    env:
+      POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Poetry
+      run: pipx install poetry
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+        cache: "poetry"
+    - name: Install Dependencies
+      run: poetry install --all-extras --no-root
+    - name: Build package
+      run: poetry build
+    - name: Publish to PyPI
+      run : poetry publish
