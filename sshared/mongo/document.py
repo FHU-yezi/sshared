@@ -132,12 +132,14 @@ class Document(Struct, **MODEL_CONFIG):
     @classmethod
     async def find_one(
         cls,
-        filter: FilterType,  # noqa: A002
+        filter: Optional[FilterType] = None,  # noqa: A002
         /,
         *,
         sort: Optional[SortType] = None,
     ) -> Optional[Self]:
-        cursor = cls.get_collection().find(cls._filter(filter)).limit(1)
+        cursor = (
+            cls.get_collection().find(cls._filter(filter) if filter else {}).limit(1)
+        )
         if sort:
             cursor = cursor.sort(cls._sort(sort))
 
@@ -149,14 +151,14 @@ class Document(Struct, **MODEL_CONFIG):
     @classmethod
     async def find_many(
         cls,
-        filter: FilterType,  # noqa: A002
+        filter: Optional[FilterType] = None,  # noqa: A002
         /,
         *,
         sort: Optional[SortType] = None,
         skip: Optional[int] = None,
         limit: Optional[int] = None,
     ) -> AsyncGenerator[Self, None]:
-        cursor = cls.get_collection().find(cls._filter(filter))
+        cursor = cls.get_collection().find(cls._filter(filter) if filter else {})
         if sort:
             cursor = cursor.sort(cls._sort(sort))
         if skip:
