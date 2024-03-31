@@ -4,10 +4,12 @@ from typing import AsyncGenerator, Dict, List, Literal, Optional, Sequence, Unio
 
 from bson import ObjectId
 from motor.core import AgnosticCollection
-from msgspec import Struct, convert, to_builtins
+from msgspec import convert, to_builtins
 from msgspec.inspect import type_info
 from pymongo import IndexModel
 from typing_extensions import Self
+
+from sshared.struct import ValidatableSturct
 
 from .meta import Index
 
@@ -19,7 +21,7 @@ UpdateType = Dict[object, Union[BasicValueType, Enum, "UpdateType"]]
 SortType = Dict[str, Literal["ASC", "DESC"]]
 
 
-MODEL_CONFIG = {
+MODEL_META = {
     "frozen": True,
     "eq": False,
     "kw_only": True,
@@ -27,11 +29,15 @@ MODEL_CONFIG = {
 }
 
 
-class Field(Struct, **MODEL_CONFIG):
-    pass
+class Field(ValidatableSturct, **MODEL_META):
+    def validate(self) -> Self:
+        return convert(
+            to_builtins(self, builtin_types=(ObjectId, datetime)),
+            type=self.__class__,
+        )
 
 
-class Document(Struct, **MODEL_CONFIG):
+class Document(ValidatableSturct, **MODEL_META):
     class Meta:
         collection: AgnosticCollection
         indexes: Sequence[Index]
@@ -90,6 +96,12 @@ class Document(Struct, **MODEL_CONFIG):
     def _sort(cls, sort: SortType, /) -> Dict[str, int]:
         return {key: 1 if order == "ASC" else -1 for key, order in sort.items()}
 
+    def validate(self) -> Self:
+        return convert(
+            to_builtins(self, builtin_types=(ObjectId, datetime)),
+            type=self.__class__,
+        )
+
     @classmethod
     def get_collection(cls) -> AgnosticCollection:
         return cls.Meta.collection
@@ -132,12 +144,14 @@ class Document(Struct, **MODEL_CONFIG):
     @classmethod
     async def find_one(
         cls,
-        filter: FilterType,  # noqa: A002
+        filter: Optional[FilterType] = None,  # noqa: A002
         /,
         *,
         sort: Optional[SortType] = None,
     ) -> Optional[Self]:
-        cursor = cls.get_collection().find(cls._filter(filter)).limit(1)
+        cursor = (
+            cls.get_collection().find(cls._filter(filter) if filter else {}).limit(1)
+        )
         if sort:
             cursor = cursor.sort(cls._sort(sort))
 
@@ -149,14 +163,14 @@ class Document(Struct, **MODEL_CONFIG):
     @classmethod
     async def find_many(
         cls,
-        filter: FilterType,  # noqa: A002
+        filter: Optional[FilterType] = None,  # noqa: A002
         /,
         *,
         sort: Optional[SortType] = None,
         skip: Optional[int] = None,
         limit: Optional[int] = None,
     ) -> AsyncGenerator[Self, None]:
-        cursor = cls.get_collection().find(cls._filter(filter))
+        cursor = cls.get_collection().find(cls._filter(filter) if filter else {})
         if sort:
             cursor = cursor.sort(cls._sort(sort))
         if skip:
