@@ -4,10 +4,12 @@ from typing import AsyncGenerator, Dict, List, Literal, Optional, Sequence, Unio
 
 from bson import ObjectId
 from motor.core import AgnosticCollection
-from msgspec import Struct, convert, to_builtins
+from msgspec import convert, to_builtins
 from msgspec.inspect import type_info
 from pymongo import IndexModel
 from typing_extensions import Self
+
+from sshared.struct import ValidatableSturct
 
 from .meta import Index
 
@@ -19,7 +21,7 @@ UpdateType = Dict[object, Union[BasicValueType, Enum, "UpdateType"]]
 SortType = Dict[str, Literal["ASC", "DESC"]]
 
 
-MODEL_CONFIG = {
+MODEL_META = {
     "frozen": True,
     "eq": False,
     "kw_only": True,
@@ -27,11 +29,15 @@ MODEL_CONFIG = {
 }
 
 
-class Field(Struct, **MODEL_CONFIG):
-    pass
+class Field(ValidatableSturct, **MODEL_META):
+    def validate(self) -> Self:
+        return convert(
+            to_builtins(self, builtin_types=(ObjectId, datetime)),
+            type=self.__class__,
+        )
 
 
-class Document(Struct, **MODEL_CONFIG):
+class Document(ValidatableSturct, **MODEL_META):
     class Meta:
         collection: AgnosticCollection
         indexes: Sequence[Index]
@@ -89,6 +95,12 @@ class Document(Struct, **MODEL_CONFIG):
     @classmethod
     def _sort(cls, sort: SortType, /) -> Dict[str, int]:
         return {key: 1 if order == "ASC" else -1 for key, order in sort.items()}
+
+    def validate(self) -> Self:
+        return convert(
+            to_builtins(self, builtin_types=(ObjectId, datetime)),
+            type=self.__class__,
+        )
 
     @classmethod
     def get_collection(cls) -> AgnosticCollection:
