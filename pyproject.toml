@@ -44,6 +44,6 @@ lint.select = [
 ]
 lint.ignore = ["ANN101", "ANN102", "ISC001", "RUF001", "RUF002", "RUF003"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 
 "__init__.py" = ["F401"]
