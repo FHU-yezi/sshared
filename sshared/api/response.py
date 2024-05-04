@@ -11,6 +11,13 @@ def success(
     *,
     status_code: Optional[int] = None,
 ) -> Response:
+    if data:
+        if isinstance(data, ResponseStruct):
+            data.validate()
+        if isinstance(data, (list, tuple, set)):
+            for item in data:
+                item.validate()
+
     return Response(data, status_code=status_code)
 
 
