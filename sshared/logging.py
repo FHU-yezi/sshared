@@ -9,6 +9,7 @@ from motor.motor_asyncio import AsyncIOMotorCollection
 from msgspec import Struct, to_builtins
 
 from sshared.terminal.color import Colors, fg_color
+from sshared.terminal.exception import pretty_exception
 
 _LogLevels = Literal["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
 _ExtraType = Union[
@@ -85,15 +86,6 @@ class Logger:
                 " ".join(f"{key}={value}" for key, value in record.extra.items()),
             )
 
-        if record.exc:
-            print(
-                " ",  # 缩进两格，print sep 会自动加入一个空格
-                fg_color("Exception", "RED"),
-                f"{record.exc.name}({record.exc.desc})"
-                if record.exc.desc is not None
-                else record.exc.name,
-            )
-
     def _add_to_pending_queue(self, record: _Record) -> None:
         with self._pending_queue_lock:
             self._pending_queue.append(record)
@@ -157,13 +149,22 @@ class Logger:
         self, /, msg: str, exc: Optional[Exception] = None, **kwargs: _ExtraType
     ) -> None:
         self._log(msg, level="WARN", exc=exc, **kwargs)
+        # TODO
+        if exc:
+            print("  " + pretty_exception(exc).replace("\n", "\n  "))
 
     def error(
         self, /, msg: str, exc: Optional[Exception] = None, **kwargs: _ExtraType
     ) -> None:
         self._log(msg, level="ERROR", exc=exc, **kwargs)
+        # TODO
+        if exc:
+            print("  " + pretty_exception(exc).replace("\n", "\n  "))
 
     def fatal(
         self, /, msg: str, exc: Optional[Exception] = None, **kwargs: _ExtraType
     ) -> None:
         self._log(msg, level="FATAL", exc=exc, **kwargs)
+        # TODO
+        if exc:
+            print("  " + pretty_exception(exc).replace("\n", "\n  "))
