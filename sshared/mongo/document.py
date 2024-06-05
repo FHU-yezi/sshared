@@ -192,3 +192,19 @@ class Document(ValidatableSturct, **MODEL_META):
     @classmethod
     async def delete_many(cls, filter: FilterType, /) -> None:  # noqa: A002
         await cls.get_collection().delete_many(cls._to_document_dict(filter))
+
+    @classmethod
+    async def aggregate_one(
+        cls, pipeline: Sequence[DocumentDictType]
+    ) -> Optional[DocumentDictType]:
+        try:
+            await cls.get_collection().aggregate(pipeline).__anext__()  # type: ignore
+        except StopAsyncIteration:
+            return None
+
+    @classmethod
+    async def aggregate_many(
+        cls, pipeline: Sequence[DocumentDictType]
+    ) -> AsyncGenerator[DocumentDictType, None]:
+        async for item in cls.get_collection().aggregate(pipeline):  # type: ignore
+            yield item
