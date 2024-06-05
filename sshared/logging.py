@@ -3,13 +3,13 @@ from collections import deque
 from datetime import datetime
 from threading import Lock, Thread
 from time import sleep
-from typing import Dict, Literal, Optional, Union
+from typing import Dict, Literal, Optional, Tuple, Union
 
 from motor.motor_asyncio import AsyncIOMotorCollection
 from msgspec import Struct, to_builtins
 
 from sshared.terminal.color import Colors, fg_color
-from sshared.terminal.exception import pretty_exception
+from sshared.terminal.exception import get_exception_stack, pretty_exception
 
 _LogLevels = Literal["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
 _ExtraType = Union[
@@ -34,14 +34,20 @@ _LogLevelConfig: Dict[_LogLevels, _LogLevelConfigItem] = {
 }
 
 
-class _ExceptionField(
-    Struct, rename="camel", frozen=True, eq=False, kw_only=True, gc=False
-):
+class _ExceptionStackField(Struct, rename="camel", frozen=True, eq=False, gc=False):
+    file_name: str
+    line_number: Optional[int]
+    func_name: str
+    line: Optional[str]
+
+
+class _ExceptionField(Struct, rename="camel", frozen=True, eq=False, gc=False):
     name: str
     desc: Optional[str]
+    stack: Optional[Tuple[_ExceptionStackField, ...]]
 
 
-class _Record(Struct, rename="camel", frozen=True, eq=False, kw_only=True, gc=False):
+class _Record(Struct, rename="camel", frozen=True, eq=False, gc=False):
     time: datetime
     level: _LogLevels
     msg: str
@@ -117,14 +123,27 @@ class Logger:
         exc: Optional[Exception],
         **kwargs: _ExtraType,
     ) -> None:
+        exc_stack = get_exception_stack(exc) if exc else None
+
         record = _Record(
             time=datetime.now(),
             level=level,
             msg=msg,
-            extra=kwargs,
+            extra=kwargs if kwargs else None,
             exc=_ExceptionField(
                 name=type(exc).__name__,
                 desc=repr(exc.args[0]) if len(exc.args) else None,
+                stack=tuple(
+                    _ExceptionStackField(
+                        file_name=item.file_name,
+                        line_number=item.line_number,
+                        func_name=item.func_name,
+                        line=item.line,
+                    )
+                    for item in exc_stack
+                )
+                if exc_stack
+                else None,
             )
             if exc
             else None,

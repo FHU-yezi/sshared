@@ -1,10 +1,32 @@
 from traceback import extract_tb
-from typing import List
+from typing import List, Optional, Tuple
+
+from msgspec import Struct
 
 from sshared.terminal.color import fg_color
 
 
-def pretty_exception(exc: Exception) -> str:
+class _ExceptionStack(Struct, frozen=True, eq=False):
+    file_name: str
+    line_number: Optional[int]
+    func_name: str
+    line: Optional[str]
+
+
+def get_exception_stack(exc: Exception, /) -> Tuple[_ExceptionStack, ...]:
+    stack = extract_tb(exc.__traceback__)
+    return tuple(
+        _ExceptionStack(
+            file_name=item.filename.split("/")[-1],
+            line_number=item.lineno,
+            func_name=item.name,
+            line=item.line,
+        )
+        for item in stack
+    )
+
+
+def pretty_exception(exc: Exception, /) -> str:
     exc_summary = (
         f"{type(exc).__name__}({exc.args[0]!r})"
         if exc.args
@@ -12,12 +34,10 @@ def pretty_exception(exc: Exception) -> str:
     )
     result: List[str] = [f"{fg_color('Exception', 'RED')} {exc_summary}"]
 
-    stack = extract_tb(exc.__traceback__)
-    for item in stack:
-        filename_and_lineno = f"  {item.filename.split('/')[-1]}:{item.lineno}"
+    for item in get_exception_stack(exc):
+        file_name_and_line_number = f"  {item.file_name}:{item.line_number}"
         result.append(
-            f"{filename_and_lineno:<25}"
-            f" > {item.name:<10} | {item.line}"
+            f"{file_name_and_line_number:<25}" f" > {item.func_name:<10} | {item.line}"
         )
 
     return "\n".join(result)
