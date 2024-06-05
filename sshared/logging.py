@@ -6,8 +6,13 @@ from time import sleep
 from typing import Dict, Literal, Optional, Tuple, Union
 
 from motor.motor_asyncio import AsyncIOMotorCollection
-from msgspec import Struct, to_builtins
+from msgspec import to_builtins
 
+from sshared.struct_constraints import (
+    NonEmptyStr,
+    PositiveInt,
+    ValidatableFrozenSturct,
+)
 from sshared.terminal.color import Colors, fg_color
 from sshared.terminal.exception import get_exception_stack, pretty_exception
 
@@ -20,38 +25,42 @@ _ExtraType = Union[
 ]
 
 
-class _LogLevelConfigItem(Struct, frozen=True, eq=False, gc=False):
-    num: int
+class _LogLevelConfigItem(ValidatableFrozenSturct, frozen=True, eq=False, gc=False):
+    num: PositiveInt
     color: Colors
 
 
 _LogLevelConfig: Dict[_LogLevels, _LogLevelConfigItem] = {
-    "DEBUG": _LogLevelConfigItem(num=1, color="BLUE"),
-    "INFO": _LogLevelConfigItem(num=2, color="GREEN"),
-    "WARN": _LogLevelConfigItem(num=3, color="YELLOW"),
-    "ERROR": _LogLevelConfigItem(num=4, color="RED"),
-    "FATAL": _LogLevelConfigItem(num=5, color="MAGENTA"),
+    "DEBUG": _LogLevelConfigItem(num=1, color="BLUE").validate(),
+    "INFO": _LogLevelConfigItem(num=2, color="GREEN").validate(),
+    "WARN": _LogLevelConfigItem(num=3, color="YELLOW").validate(),
+    "ERROR": _LogLevelConfigItem(num=4, color="RED").validate(),
+    "FATAL": _LogLevelConfigItem(num=5, color="MAGENTA").validate(),
 }
 
 
-class _ExceptionStackField(Struct, rename="camel", frozen=True, eq=False, gc=False):
-    file_name: str
-    line_number: Optional[int]
-    func_name: str
-    line: Optional[str]
+class _ExceptionStackField(
+    ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False
+):
+    file_name: NonEmptyStr
+    line_number: Optional[PositiveInt]
+    func_name: NonEmptyStr
+    line: Optional[NonEmptyStr]
 
 
-class _ExceptionField(Struct, rename="camel", frozen=True, eq=False, gc=False):
-    name: str
+class _ExceptionField(
+    ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False
+):
+    name: NonEmptyStr
     desc: Optional[str]
     stack: Optional[Tuple[_ExceptionStackField, ...]]
 
 
-class _Record(Struct, rename="camel", frozen=True, eq=False, gc=False):
+class _Record(ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False):
     time: datetime
     level: _LogLevels
-    msg: str
-    extra: Optional[Dict[str, _ExtraType]]
+    msg: NonEmptyStr
+    extra: Optional[Dict[NonEmptyStr, _ExtraType]]
     exc: Optional[_ExceptionField]
 
 
@@ -144,7 +153,7 @@ class Logger:
                 )
                 if exc_stack
                 else None,
-            )
+            ).validate()
             if exc
             else None,
         )

@@ -1,12 +1,11 @@
 from traceback import extract_tb
 from typing import List, Optional, Tuple
 
-from msgspec import Struct
-
+from sshared.struct_constraints import ValidatableFrozenSturct
 from sshared.terminal.color import fg_color
 
 
-class _ExceptionStack(Struct, frozen=True, eq=False):
+class _ExceptionStack(ValidatableFrozenSturct, frozen=True, eq=False):
     file_name: str
     line_number: Optional[int]
     func_name: str
@@ -21,7 +20,7 @@ def get_exception_stack(exc: Exception, /) -> Tuple[_ExceptionStack, ...]:
             line_number=item.lineno,
             func_name=item.name,
             line=item.line,
-        )
+        ).validate()
         for item in stack
     )
 
