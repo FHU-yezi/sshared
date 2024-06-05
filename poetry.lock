@@ -809,4 +809,4 @@ mongo = ["motor"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "2ac182b87ff300dc0d7fdb7f0afae30bbcf627c3e374affea226fd33ef2b3ebe"
+content-hash = "27ca3ae899f455b57644528d99d09486ef1846634a3adb12683b4e0b721c370b"
