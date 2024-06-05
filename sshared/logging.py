@@ -59,7 +59,7 @@ class Logger:
     def __init__(
         self,
         display_level: _LogLevels = "DEBUG",
-        store_level: _LogLevels = "INFO",
+        store_level: _LogLevels = "DEBUG",
         store_collection: Optional[AsyncIOMotorCollection] = None,
         store_interval: int = 3,
     ) -> None:
