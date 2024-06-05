@@ -1,10 +1,15 @@
 from typing import Callable, Union
 
-from msgspec import Struct
+from sshared.struct_constraints import (
+    NonNegativeFloat,
+    NonNegativeInt,
+    PositiveInt,
+    ValidatableFrozenSturct,
+)
 
 
-class RetryEvent(Struct, frozen=True, eq=False, kw_only=True, gc=False):
-    attempts: int
-    delay: Union[int, float]
+class RetryEvent(ValidatableFrozenSturct, frozen=True, eq=False, gc=False):
+    attempts: PositiveInt
+    delay: Union[NonNegativeInt, NonNegativeFloat]
     func: Callable
     exception: Exception

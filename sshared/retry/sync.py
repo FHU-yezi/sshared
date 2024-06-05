@@ -36,7 +36,7 @@ def retry(
                                 delay=current_delay,
                                 func=func,
                                 exception=e,
-                            )
+                            ).validate()
                         )
                     sleep(current_delay)
                     current_attempt += 1

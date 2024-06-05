@@ -1,10 +1,14 @@
 from typing import Optional, Sequence
 
-from msgspec import Struct
+from sshared.struct_constraints import (
+    NonEmptyStr,
+    PositiveInt,
+    ValidatableFrozenSturct,
+)
 
 
-class Index(Struct, frozen=True, eq=False, kw_only=True, gc=False):
-    keys: Sequence[str]
-    name: Optional[str] = None
+class Index(ValidatableFrozenSturct, frozen=True, eq=False, gc=False):
+    keys: Sequence[NonEmptyStr]
+    name: Optional[NonEmptyStr] = None
     unique: bool = False
-    expire_after_seconds: Optional[int] = None
+    expire_after_seconds: Optional[PositiveInt] = None
