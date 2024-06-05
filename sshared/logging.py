@@ -68,19 +68,19 @@ class Logger:
     def __init__(
         self,
         display_level: _LogLevels = "DEBUG",
-        store_level: _LogLevels = "DEBUG",
-        store_collection: Optional[AsyncIOMotorCollection] = None,
-        store_interval: int = 3,
+        save_level: _LogLevels = "DEBUG",
+        save_collection: Optional[AsyncIOMotorCollection] = None,
+        save_interval: int = 3,
     ) -> None:
         self._display_level: _LogLevels = display_level
-        self._store_level: _LogLevels = store_level
+        self._save_level: _LogLevels = save_level
 
-        self._store_collection = store_collection
+        self._save_collection = save_collection
         self._pending_queue: deque[_Record] = deque()
         self._pending_queue_lock = Lock()
-        self._store_interval = store_interval
+        self._save_interval = save_interval
 
-        if self._store_collection is not None:
+        if self._save_collection is not None:
             Thread(
                 target=self.background_save_thread,
                 name="logger-background-save",
@@ -106,7 +106,7 @@ class Logger:
             self._pending_queue.append(record)
 
     async def _save_pending(self) -> None:
-        if self._store_collection is None:
+        if self._save_collection is None:
             raise ValueError("未指定用于存储日志信息的 MongoDB 集合")
 
         with self._pending_queue_lock:
@@ -116,11 +116,11 @@ class Logger:
         if not data:
             return
 
-        await self._store_collection.insert_many(to_builtins(item) for item in data)
+        await self._save_collection.insert_many(to_builtins(item) for item in data)
 
     def background_save_thread(self) -> None:
         while True:
-            sleep(self._store_interval)
+            sleep(self._save_interval)
             asyncio_run(self._save_pending())
 
     def _log(
@@ -162,8 +162,8 @@ class Logger:
             self._print(record)
 
         if (
-            _LogLevelConfig[level].num >= _LogLevelConfig[self._store_level].num
-            and self._store_collection is not None
+            _LogLevelConfig[level].num >= _LogLevelConfig[self._save_level].num
+            and self._save_collection is not None
         ):
             self._add_to_pending_queue(record)
 
