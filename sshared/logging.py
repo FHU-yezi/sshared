@@ -1,12 +1,11 @@
-from asyncio import run as asyncio_run
 from collections import deque
 from datetime import datetime
 from threading import Lock, Thread
 from time import sleep
 from typing import Dict, Literal, Optional, Tuple, Union
 
-from motor.motor_asyncio import AsyncIOMotorCollection
 from msgspec import to_builtins
+from pymongo.collection import Collection
 
 from sshared.struct_constraints import (
     NonEmptyStr,
@@ -69,7 +68,7 @@ class Logger:
         self,
         display_level: _LogLevels = "DEBUG",
         save_level: _LogLevels = "DEBUG",
-        save_collection: Optional[AsyncIOMotorCollection] = None,
+        save_collection: Optional[Collection] = None,
         save_interval: int = 3,
     ) -> None:
         self._display_level: _LogLevels = display_level
@@ -82,7 +81,7 @@ class Logger:
 
         if self._save_collection is not None:
             Thread(
-                target=self.background_save_thread,
+                target=self._background_save,
                 name="logger-background-save",
                 daemon=True,
             ).start()
@@ -105,10 +104,7 @@ class Logger:
         with self._pending_queue_lock:
             self._pending_queue.append(record)
 
-    async def _save_pending(self) -> None:
-        if self._save_collection is None:
-            raise ValueError("未指定用于存储日志信息的 MongoDB 集合")
-
+    def _save_pending(self) -> None:
         with self._pending_queue_lock:
             data = tuple(self._pending_queue)
             self._pending_queue.clear()
@@ -116,12 +112,15 @@ class Logger:
         if not data:
             return
 
-        await self._save_collection.insert_many(to_builtins(item) for item in data)
+        self._save_collection.insert_many(to_builtins(item) for item in data)  # type: ignore
 
-    def background_save_thread(self) -> None:
+    def _background_save(self) -> None:
+        if self._save_collection is None:
+            raise ValueError("未指定用于存储日志信息的 MongoDB 集合")
+
         while True:
             sleep(self._save_interval)
-            asyncio_run(self._save_pending())
+            self._save_pending()
 
     def _log(
         self,
