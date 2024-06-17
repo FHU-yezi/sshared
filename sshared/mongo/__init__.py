@@ -1,2 +1,2 @@
-from .document import MODEL_META, Document, Field
+from .document import Document, Field
 from .meta import Index

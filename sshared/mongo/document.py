@@ -8,7 +8,7 @@ from msgspec import convert, to_builtins
 from pymongo import IndexModel
 from typing_extensions import Self
 
-from sshared.validatable_struct import ValidatableSturct
+from sshared.validatable_struct import ValidatableFrozenSturct
 
 from .meta import Index
 
@@ -16,15 +16,7 @@ DocumentType = Dict[str, Any]
 SortType = Dict[str, Literal["ASC", "DESC"]]
 
 
-MODEL_META = {
-    "frozen": True,
-    "eq": False,
-    "kw_only": True,
-    "rename": "camel",
-}
-
-
-class Field(ValidatableSturct, **MODEL_META):
+class Field(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
     def validate(self) -> Self:
         return convert(
             to_builtins(self, builtin_types=(ObjectId, datetime)),
@@ -32,7 +24,7 @@ class Field(ValidatableSturct, **MODEL_META):
         )
 
 
-class Document(ValidatableSturct, **MODEL_META):
+class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
     class Meta:
         collection: AgnosticCollection
         indexes: Sequence[Index]
@@ -63,10 +55,6 @@ class Document(ValidatableSturct, **MODEL_META):
     @classmethod
     def get_collection(cls) -> AgnosticCollection:
         return cls.Meta.collection
-
-    @property
-    def collection(self) -> AgnosticCollection:
-        return self.Meta.collection
 
     @classmethod
     async def ensure_indexes(cls) -> None:
