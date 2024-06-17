@@ -1,6 +1,6 @@
 from typing import Optional, Sequence
 
-from sshared.struct_constraints import (
+from sshared.validatable_struct import (
     NonEmptyStr,
     PositiveInt,
     ValidatableFrozenSturct,

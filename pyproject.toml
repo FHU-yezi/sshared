@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sshared"
-version = "0.7.0"
+version = "0.8.0"
 description = "后端共享组件"
 authors = ["yezi <yehaowei20060411@qq.com>"]
 license = "MIT"

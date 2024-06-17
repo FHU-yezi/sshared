@@ -21,7 +21,7 @@ def success(
     return Response(data, status_code=status_code)
 
 
-def fail(*, status_code: int, message: str, details: str) -> Response:
+def error(*, status_code: int, message: str, details: str) -> Response:
     return Response(
         ErrorStruct(message=message, details=details), status_code=status_code
     )
