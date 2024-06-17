@@ -14,7 +14,7 @@ from litestar.status_codes import (
 )
 from litestar.types import ExceptionHandlersMap
 
-from sshared.api.response import fail
+from sshared.api.response import error
 from sshared.time import get_now_without_microsecond
 
 
@@ -38,7 +38,7 @@ def _not_found_exception_handler(_: Request, __: Exception) -> Response:
 def _validation_exception_handler(
     _: Request, exception: ValidationException
 ) -> Response:
-    return fail(
+    return error(
         status_code=HTTP_422_UNPROCESSABLE_ENTITY,
         message="数据校验失败",
         details=_generate_details_from_validation_exception_extra(exception.extra),  # type: ignore
@@ -54,7 +54,7 @@ def _internal_server_error_handler(_: Request, exception: Exception) -> Response
         f"[{get_now_without_microsecond()}] 处理请求时发生异常：{exception.__repr__()}"
     )
 
-    return fail(
+    return error(
         status_code=HTTP_500_INTERNAL_SERVER_ERROR,
         message="未知服务端异常",
         details="请稍后再试或联系开发者",
