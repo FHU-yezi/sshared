@@ -73,6 +73,8 @@ class Document(ValidatableSturct, **MODEL_META):
         index_models: List[IndexModel] = []
 
         for index in cls.Meta.indexes:
+            index.validate()
+
             if index.expire_after_seconds:
                 index_models.append(
                     IndexModel(
