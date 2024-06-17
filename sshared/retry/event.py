@@ -1,6 +1,6 @@
 from typing import Callable, Union
 
-from sshared.struct_constraints import (
+from sshared.validatable_struct import (
     NonNegativeFloat,
     NonNegativeInt,
     PositiveInt,

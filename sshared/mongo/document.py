@@ -8,7 +8,7 @@ from msgspec import convert, to_builtins
 from pymongo import IndexModel
 from typing_extensions import Self
 
-from sshared.struct_constraints import ValidatableSturct
+from sshared.validatable_struct import ValidatableSturct
 
 from .meta import Index
 

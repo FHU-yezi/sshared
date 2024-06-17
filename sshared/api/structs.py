@@ -1,6 +1,6 @@
 from msgspec import Struct
 
-from sshared.struct_constraints import ValidatableSturct
+from sshared.validatable_struct import ValidatableSturct
 
 
 class RequestStruct(

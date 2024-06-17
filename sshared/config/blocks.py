@@ -3,7 +3,7 @@ from typing import Annotated, Literal
 from msgspec import Meta
 
 from sshared.logging import _LogLevels
-from sshared.struct_constraints import NonEmptyStr, PositiveInt, ValidatableFrozenSturct
+from sshared.validatable_struct import NonEmptyStr, PositiveInt, ValidatableFrozenSturct
 
 
 class ConfigBlock(

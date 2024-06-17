@@ -1,7 +1,7 @@
 from msgspec.toml import decode
 from typing_extensions import Self
 
-from sshared.struct_constraints import ValidatableFrozenSturct
+from sshared.validatable_struct import ValidatableFrozenSturct
 
 
 class ConfigBase(
