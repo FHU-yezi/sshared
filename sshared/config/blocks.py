@@ -5,22 +5,30 @@ from msgspec import Meta
 from sshared.logging import _LogLevels
 from sshared.struct_constraints import NonEmptyStr, PositiveInt, ValidatableFrozenSturct
 
-from ._meta import CONFIG_META
+
+class ConfigBlock(
+    ValidatableFrozenSturct,
+    frozen=True,
+    forbid_unknown_fields=True,
+    eq=False,
+    gc=False,
+):
+    pass
 
 
-class MongoDBBlock(ValidatableFrozenSturct, frozen=True, **CONFIG_META):
+class MongoDBBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Annotated[int, Meta(gt=0, lt=65536)]
     database: NonEmptyStr
 
 
-class LoggingBlock(ValidatableFrozenSturct, frozen=True, **CONFIG_META):
+class LoggingBlock(ConfigBlock, frozen=True):
     enable_save: bool
     display_level: _LogLevels
     save_level: _LogLevels
 
 
-class UvicornBlock(ValidatableFrozenSturct, frozen=True, **CONFIG_META):
+class UvicornBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Annotated[int, Meta(gt=0, lt=65536)]
     log_level: Literal["critical", "error", "warning", "info", "debug", "trace"]
@@ -29,11 +37,11 @@ class UvicornBlock(ValidatableFrozenSturct, frozen=True, **CONFIG_META):
     access_log: bool
 
 
-class FeishuAuthBlock(ValidatableFrozenSturct, frozen=True, **CONFIG_META):
+class FeishuAuthBlock(ConfigBlock, frozen=True):
     app_id: NonEmptyStr
     app_secret: NonEmptyStr
 
 
-class FeishuBitableBlock(ValidatableFrozenSturct, frozen=True, **CONFIG_META):
+class FeishuBitableBlock(ConfigBlock, frozen=True):
     app_id: NonEmptyStr
     table_id: NonEmptyStr
