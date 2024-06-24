@@ -1,8 +1,9 @@
 from traceback import extract_tb
 from typing import List, Optional, Tuple
 
-from sshared.terminal.color import fg_color
 from sshared.validatable_struct import ValidatableFrozenSturct
+
+from .color import fg_color
 
 
 class _ExceptionStack(ValidatableFrozenSturct, frozen=True, eq=False):

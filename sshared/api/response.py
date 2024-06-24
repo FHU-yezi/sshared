@@ -2,7 +2,7 @@ from typing import Optional, Sequence, Union
 
 from litestar import Response
 
-from sshared.api.structs import ErrorStruct, ResponseStruct
+from .structs import ErrorStruct, ResponseStruct
 
 
 def success(

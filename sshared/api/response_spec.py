@@ -2,7 +2,7 @@ from typing import Optional, Sequence, Type, Union
 
 from litestar.openapi.datastructures import ResponseSpec
 
-from sshared.api.structs import ErrorStruct, ResponseStruct
+from .structs import ErrorStruct, ResponseStruct
 
 
 def success_response_spec(
