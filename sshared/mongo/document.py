@@ -91,6 +91,7 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
         return to_builtins(self, builtin_types=(ObjectId, datetime))
 
     async def save(self) -> None:
+        self.validate()
         await self.__class__.insert_one(self)
 
     @classmethod
@@ -135,10 +136,13 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
 
     @classmethod
     async def insert_one(cls, data: Self, /) -> None:
+        data.validate()
         await cls.Meta.collection.insert_one(data.to_dict())
 
     @classmethod
     async def insert_many(cls, data: Sequence[Self], /) -> None:
+        for item in data:
+            item.validate()
         await cls.Meta.collection.insert_many(x.to_dict() for x in data)
 
     @classmethod
