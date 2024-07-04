@@ -14,8 +14,9 @@ from litestar.status_codes import (
 )
 from litestar.types import ExceptionHandlersMap
 
-from sshared.api.response import error
 from sshared.time import get_now_without_microsecond
+
+from .response import error
 
 
 def _generate_details_from_validation_exception_extra(

@@ -2,7 +2,7 @@ from typing import Optional, Sequence, Union
 
 from litestar import Response
 
-from sshared.api.structs import ErrorStruct, ResponseStruct
+from .structs import ErrorStruct, ResponseStruct
 
 
 def success(
@@ -21,7 +21,7 @@ def success(
     return Response(data, status_code=status_code)
 
 
-def error(*, status_code: int, message: str, details: str) -> Response:
+def error(*, status_code: int, message: str, details: Optional[str] = None) -> Response:
     return Response(
         ErrorStruct(message=message, details=details), status_code=status_code
     )

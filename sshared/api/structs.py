@@ -1,3 +1,5 @@
+from typing import Optional
+
 from msgspec import Struct
 
 from sshared.validatable_struct import ValidatableSturct
@@ -15,4 +17,4 @@ class ResponseStruct(ValidatableSturct, eq=False, rename="camel", gc=False):
 
 class ErrorStruct(ResponseStruct):
     message: str
-    details: str
+    details: Optional[str]
