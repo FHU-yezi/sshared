@@ -3,11 +3,11 @@ from typing import Annotated, Literal
 from msgspec import Meta
 
 from sshared.logging import _LogLevels
-from sshared.strict_struct import NonEmptyStr, PositiveInt, StrictFrozenSturct
+from sshared.strict_struct import NonEmptyStr, PositiveInt, StrictFrozenStruct
 
 
 class ConfigBlock(
-    StrictFrozenSturct,
+    StrictFrozenStruct,
     frozen=True,
     forbid_unknown_fields=True,
     eq=False,

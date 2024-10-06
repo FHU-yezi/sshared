@@ -2,7 +2,7 @@ from typing import Optional
 
 from msgspec import Struct
 
-from sshared.strict_struct import StrictSturct
+from sshared.strict_struct import StrictStruct
 
 
 class RequestStruct(
@@ -11,7 +11,7 @@ class RequestStruct(
     pass
 
 
-class ResponseStruct(StrictSturct, eq=False, rename="camel", gc=False):
+class ResponseStruct(StrictStruct, eq=False, rename="camel", gc=False):
     pass
 
 

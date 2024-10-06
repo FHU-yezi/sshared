@@ -4,11 +4,11 @@ from sshared.strict_struct import (
     NonNegativeFloat,
     NonNegativeInt,
     PositiveInt,
-    StrictFrozenSturct,
+    StrictFrozenStruct,
 )
 
 
-class RetryEvent(StrictFrozenSturct, frozen=True, eq=False, gc=False):
+class RetryEvent(StrictFrozenStruct, frozen=True, eq=False, gc=False):
     attempts: PositiveInt
     delay: Union[NonNegativeInt, NonNegativeFloat]
     func: Callable

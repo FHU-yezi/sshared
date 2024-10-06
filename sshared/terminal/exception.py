@@ -1,12 +1,12 @@
 from traceback import extract_tb
 from typing import Optional
 
-from sshared.strict_struct import StrictFrozenSturct
+from sshared.strict_struct import StrictFrozenStruct
 
 from .color import fg_color
 
 
-class _ExceptionStack(StrictFrozenSturct, frozen=True, eq=False):
+class _ExceptionStack(StrictFrozenStruct, frozen=True, eq=False):
     file_name: str
     line_number: Optional[int]
     func_name: str

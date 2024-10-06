@@ -4,11 +4,11 @@ from typing import Optional
 from sshared.strict_struct import (
     NonEmptyStr,
     PositiveInt,
-    StrictFrozenSturct,
+    StrictFrozenStruct,
 )
 
 
-class Index(StrictFrozenSturct, frozen=True, eq=False, gc=False):
+class Index(StrictFrozenStruct, frozen=True, eq=False, gc=False):
     keys: Sequence[NonEmptyStr]
     name: Optional[NonEmptyStr] = None
     unique: bool = False

@@ -1,7 +1,7 @@
-from sshared.strict_struct import StrictSturct
+from sshared.strict_struct import StrictStruct
 
 
-class View(StrictSturct, eq=False, forbid_unknown_fields=True):
+class View(StrictStruct, eq=False, forbid_unknown_fields=True):
     @classmethod
     async def _create_view(cls) -> None:
         pass
