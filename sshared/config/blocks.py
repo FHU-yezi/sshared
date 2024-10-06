@@ -3,11 +3,11 @@ from typing import Annotated, Literal
 from msgspec import Meta
 
 from sshared.logging import _LogLevels
-from sshared.validatable_struct import NonEmptyStr, PositiveInt, ValidatableFrozenSturct
+from sshared.strict_struct import NonEmptyStr, PositiveInt, StrictFrozenStruct
 
 
 class ConfigBlock(
-    ValidatableFrozenSturct,
+    StrictFrozenStruct,
     frozen=True,
     forbid_unknown_fields=True,
     eq=False,
@@ -16,7 +16,22 @@ class ConfigBlock(
     pass
 
 
-class MongoDBBlock(ConfigBlock, frozen=True):
+class PostgresBlock(ConfigBlock, frozen=True):
+    host: NonEmptyStr
+    port: Annotated[int, Meta(gt=0, lt=65536)]
+    user: NonEmptyStr
+    password: NonEmptyStr
+    database: NonEmptyStr
+
+    @property
+    def connection_string(self) -> str:
+        return (
+            f"postgres://{self.user}:{self.password}"
+            f"@{self.host}:{self.port}/{self.database}"
+        )
+
+
+class MongoBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Annotated[int, Meta(gt=0, lt=65536)]
     database: NonEmptyStr

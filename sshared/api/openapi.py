@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from litestar.openapi.plugins import ScalarRenderPlugin
 
@@ -13,7 +13,7 @@ class CustomScalarRenderPlugin(ScalarRenderPlugin):
         return "/api/docs/openapi.json"
 
 
-def generate_openapi_config_params() -> Dict[str, Any]:
+def generate_openapi_config_params() -> dict[str, Any]:
     return {
         "path": "/docs",
         "render_plugins": (CustomScalarRenderPlugin(path="/"),),

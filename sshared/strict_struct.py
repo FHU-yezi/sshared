@@ -1,19 +1,21 @@
-from typing import Annotated
+from typing import Annotated, TypeVar
 
 from msgspec import Meta, Struct, convert, to_builtins
-from typing_extensions import Self
+
+T = TypeVar("T", bound="StrictStruct")
+P = TypeVar("P", bound="StrictFrozenStruct")
 
 
-class ValidatableSturct(Struct):
-    def validate(self) -> Self:
+class StrictStruct(Struct):
+    def validate(self: T) -> T:
         return convert(
             to_builtins(self),
             type=self.__class__,
         )
 
 
-class ValidatableFrozenSturct(Struct, frozen=True):
-    def validate(self) -> Self:
+class StrictFrozenStruct(Struct, frozen=True):
+    def validate(self: P) -> P:
         return convert(
             to_builtins(self),
             type=self.__class__,

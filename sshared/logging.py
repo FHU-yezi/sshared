@@ -2,17 +2,17 @@ from collections import deque
 from datetime import datetime
 from threading import Lock, Thread
 from time import sleep
-from typing import Dict, Literal, Optional, Tuple, Union
+from typing import Literal, Optional, Union
 
 from msgspec import to_builtins
 from pymongo.collection import Collection
 
 from sshared.terminal.color import Colors, fg_color
 from sshared.terminal.exception import get_exception_stack, pretty_exception
-from sshared.validatable_struct import (
+from sshared.strict_struct import (
     NonEmptyStr,
     PositiveInt,
-    ValidatableFrozenSturct,
+    StrictFrozenStruct,
 )
 
 _LogLevels = Literal["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
@@ -24,12 +24,12 @@ _ExtraType = Union[
 ]
 
 
-class _LogLevelConfigItem(ValidatableFrozenSturct, frozen=True, eq=False, gc=False):
+class _LogLevelConfigItem(StrictFrozenStruct, frozen=True, eq=False, gc=False):
     num: PositiveInt
     color: Colors
 
 
-_LogLevelConfig: Dict[_LogLevels, _LogLevelConfigItem] = {
+_LogLevelConfig: dict[_LogLevels, _LogLevelConfigItem] = {
     "DEBUG": _LogLevelConfigItem(num=1, color="BLUE").validate(),
     "INFO": _LogLevelConfigItem(num=2, color="GREEN").validate(),
     "WARN": _LogLevelConfigItem(num=3, color="YELLOW").validate(),
@@ -39,7 +39,7 @@ _LogLevelConfig: Dict[_LogLevels, _LogLevelConfigItem] = {
 
 
 class _ExceptionStackField(
-    ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False
+    StrictFrozenStruct, rename="camel", frozen=True, eq=False, gc=False
 ):
     file_name: NonEmptyStr
     line_number: Optional[PositiveInt]
@@ -48,18 +48,18 @@ class _ExceptionStackField(
 
 
 class _ExceptionField(
-    ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False
+    StrictFrozenStruct, rename="camel", frozen=True, eq=False, gc=False
 ):
     name: NonEmptyStr
     desc: Optional[str]
-    stack: Optional[Tuple[_ExceptionStackField, ...]]
+    stack: Optional[tuple[_ExceptionStackField, ...]]
 
 
-class _Record(ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False):
+class _Record(StrictFrozenStruct, rename="camel", frozen=True, eq=False, gc=False):
     time: datetime
     level: _LogLevels
     msg: NonEmptyStr
-    extra: Optional[Dict[NonEmptyStr, _ExtraType]]
+    extra: Optional[dict[NonEmptyStr, _ExtraType]]
     exc: Optional[_ExceptionField]
 
 

@@ -1,30 +1,33 @@
+from collections.abc import AsyncGenerator, Sequence
 from datetime import datetime
 from enum import Enum
-from typing import Any, AsyncGenerator, Dict, List, Literal, Optional, Sequence
+from typing import Any, Literal, Optional, TypeVar
 
 from bson import ObjectId
 from motor.core import AgnosticCollection
 from msgspec import convert, to_builtins
 from pymongo import IndexModel
-from typing_extensions import Self
 
-from sshared.validatable_struct import ValidatableFrozenSturct
+from sshared.strict_struct import StrictFrozenStruct
 
 from .meta import Index
 
-DocumentType = Dict[str, Any]
-SortType = Dict[str, Literal["ASC", "DESC"]]
+T = TypeVar("T", bound="Field")
+P = TypeVar("P", bound="Document")
+
+DocumentType = dict[str, Any]
+SortType = dict[str, Literal["ASC", "DESC"]]
 
 
-class Field(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
-    def validate(self) -> Self:
+class Field(StrictFrozenStruct, frozen=True, eq=False, rename="camel"):
+    def validate(self: T) -> T:
         return convert(
             to_builtins(self, builtin_types=(ObjectId, datetime)),
             type=self.__class__,
         )
 
 
-class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
+class Document(StrictFrozenStruct, frozen=True, eq=False, rename="camel"):
     class Meta:
         collection: AgnosticCollection
         indexes: Sequence[Index]
@@ -43,10 +46,10 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
         return result
 
     @classmethod
-    def _sort(cls, sort: SortType, /) -> Dict[str, int]:
+    def _sort(cls, sort: SortType, /) -> dict[str, int]:
         return {key: 1 if order == "ASC" else -1 for key, order in sort.items()}
 
-    def validate(self) -> Self:
+    def validate(self: P) -> P:
         return convert(
             to_builtins(self, builtin_types=(ObjectId, datetime)),
             type=self.__class__,
@@ -58,7 +61,7 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
 
     @classmethod
     async def ensure_indexes(cls) -> None:
-        index_models: List[IndexModel] = []
+        index_models: list[IndexModel] = []
 
         for index in cls.Meta.indexes:
             index.validate()
@@ -84,7 +87,7 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
         await cls.Meta.collection.create_indexes(index_models)
 
     @classmethod
-    def from_dict(cls, data: DocumentType, /) -> Self:
+    def from_dict(cls: type[P], data: DocumentType, /) -> P:
         return convert(data, type=cls)
 
     def to_dict(self) -> DocumentType:
@@ -96,12 +99,12 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
 
     @classmethod
     async def find_one(
-        cls,
+        cls: type[P],
         filter: Optional[DocumentType] = None,  # noqa: A002
         /,
         *,
         sort: Optional[SortType] = None,
-    ) -> Optional[Self]:
+    ) -> Optional[P]:
         cursor = cls.Meta.collection.find(
             cls._process_dict(filter) if filter else {}
         ).limit(1)
@@ -115,14 +118,14 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
 
     @classmethod
     async def find_many(
-        cls,
+        cls: type[P],
         filter: Optional[DocumentType] = None,  # noqa: A002
         /,
         *,
         sort: Optional[SortType] = None,
         skip: Optional[int] = None,
         limit: Optional[int] = None,
-    ) -> AsyncGenerator[Self, None]:
+    ) -> AsyncGenerator[P, None]:
         cursor = cls.Meta.collection.find(cls._process_dict(filter) if filter else {})
         if sort:
             cursor = cursor.sort(cls._sort(sort))
@@ -135,12 +138,12 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
             yield cls.from_dict(item)
 
     @classmethod
-    async def insert_one(cls, data: Self, /) -> None:
+    async def insert_one(cls: type[P], data: P, /) -> None:
         data.validate()
         await cls.Meta.collection.insert_one(data.to_dict())
 
     @classmethod
-    async def insert_many(cls, data: Sequence[Self], /) -> None:
+    async def insert_many(cls: type[P], data: Sequence[P], /) -> None:
         for item in data:
             item.validate()
         await cls.Meta.collection.insert_many(x.to_dict() for x in data)
