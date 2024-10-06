@@ -9,10 +9,10 @@ from pymongo.collection import Collection
 
 from sshared.terminal.color import Colors, fg_color
 from sshared.terminal.exception import get_exception_stack, pretty_exception
-from sshared.validatable_struct import (
+from sshared.strict_struct import (
     NonEmptyStr,
     PositiveInt,
-    ValidatableFrozenSturct,
+    StrictFrozenSturct,
 )
 
 _LogLevels = Literal["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
@@ -24,7 +24,7 @@ _ExtraType = Union[
 ]
 
 
-class _LogLevelConfigItem(ValidatableFrozenSturct, frozen=True, eq=False, gc=False):
+class _LogLevelConfigItem(StrictFrozenSturct, frozen=True, eq=False, gc=False):
     num: PositiveInt
     color: Colors
 
@@ -39,7 +39,7 @@ _LogLevelConfig: dict[_LogLevels, _LogLevelConfigItem] = {
 
 
 class _ExceptionStackField(
-    ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False
+    StrictFrozenSturct, rename="camel", frozen=True, eq=False, gc=False
 ):
     file_name: NonEmptyStr
     line_number: Optional[PositiveInt]
@@ -48,14 +48,14 @@ class _ExceptionStackField(
 
 
 class _ExceptionField(
-    ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False
+    StrictFrozenSturct, rename="camel", frozen=True, eq=False, gc=False
 ):
     name: NonEmptyStr
     desc: Optional[str]
     stack: Optional[tuple[_ExceptionStackField, ...]]
 
 
-class _Record(ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False):
+class _Record(StrictFrozenSturct, rename="camel", frozen=True, eq=False, gc=False):
     time: datetime
     level: _LogLevels
     msg: NonEmptyStr

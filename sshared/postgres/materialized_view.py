@@ -1,7 +1,7 @@
-from sshared.validatable_struct import ValidatableSturct
+from sshared.strict_struct import StrictSturct
 
 
-class MaterializedView(ValidatableSturct, eq=False, forbid_unknown_fields=True):
+class MaterializedView(StrictSturct, eq=False, forbid_unknown_fields=True):
     @classmethod
     async def _create_materialized_view(cls) -> None:
         pass

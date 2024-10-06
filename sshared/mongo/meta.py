@@ -1,14 +1,14 @@
 from collections.abc import Sequence
 from typing import Optional
 
-from sshared.validatable_struct import (
+from sshared.strict_struct import (
     NonEmptyStr,
     PositiveInt,
-    ValidatableFrozenSturct,
+    StrictFrozenSturct,
 )
 
 
-class Index(ValidatableFrozenSturct, frozen=True, eq=False, gc=False):
+class Index(StrictFrozenSturct, frozen=True, eq=False, gc=False):
     keys: Sequence[NonEmptyStr]
     name: Optional[NonEmptyStr] = None
     unique: bool = False

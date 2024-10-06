@@ -1,7 +1,7 @@
-from sshared.validatable_struct import ValidatableSturct
+from sshared.strict_struct import StrictSturct
 
 
-class Table(ValidatableSturct, eq=False, forbid_unknown_fields=True):
+class Table(StrictSturct, eq=False, forbid_unknown_fields=True):
     @classmethod
     async def _create_enum(cls) -> None:
         pass

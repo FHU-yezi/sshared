@@ -1,11 +1,11 @@
 from msgspec.toml import decode
 from typing_extensions import Self
 
-from sshared.validatable_struct import ValidatableFrozenSturct
+from sshared.strict_struct import StrictFrozenSturct
 
 
 class ConfigBase(
-    ValidatableFrozenSturct,
+    StrictFrozenSturct,
     frozen=True,
     forbid_unknown_fields=True,
     eq=False,

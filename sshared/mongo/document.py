@@ -9,7 +9,7 @@ from msgspec import convert, to_builtins
 from pymongo import IndexModel
 from typing_extensions import Self
 
-from sshared.validatable_struct import ValidatableFrozenSturct
+from sshared.strict_struct import StrictFrozenSturct
 
 from .meta import Index
 
@@ -17,7 +17,7 @@ DocumentType = dict[str, Any]
 SortType = dict[str, Literal["ASC", "DESC"]]
 
 
-class Field(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
+class Field(StrictFrozenSturct, frozen=True, eq=False, rename="camel"):
     def validate(self) -> Self:
         return convert(
             to_builtins(self, builtin_types=(ObjectId, datetime)),
@@ -25,7 +25,7 @@ class Field(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
         )
 
 
-class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
+class Document(StrictFrozenSturct, frozen=True, eq=False, rename="camel"):
     class Meta:
         collection: AgnosticCollection
         indexes: Sequence[Index]

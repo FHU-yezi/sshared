@@ -1,7 +1,7 @@
-from sshared.validatable_struct import ValidatableSturct
+from sshared.strict_struct import StrictSturct
 
 
-class View(ValidatableSturct, eq=False, forbid_unknown_fields=True):
+class View(StrictSturct, eq=False, forbid_unknown_fields=True):
     @classmethod
     async def _create_view(cls) -> None:
         pass

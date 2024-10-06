@@ -2,7 +2,7 @@ from typing import Optional
 
 from msgspec import Struct
 
-from sshared.validatable_struct import ValidatableSturct
+from sshared.strict_struct import StrictSturct
 
 
 class RequestStruct(
@@ -11,7 +11,7 @@ class RequestStruct(
     pass
 
 
-class ResponseStruct(ValidatableSturct, eq=False, rename="camel", gc=False):
+class ResponseStruct(StrictSturct, eq=False, rename="camel", gc=False):
     pass
 
 

@@ -4,7 +4,7 @@ from msgspec import Meta, Struct, convert, to_builtins
 from typing_extensions import Self
 
 
-class ValidatableSturct(Struct):
+class StrictSturct(Struct):
     def validate(self) -> Self:
         return convert(
             to_builtins(self),
@@ -12,7 +12,7 @@ class ValidatableSturct(Struct):
         )
 
 
-class ValidatableFrozenSturct(Struct, frozen=True):
+class StrictFrozenSturct(Struct, frozen=True):
     def validate(self) -> Self:
         return convert(
             to_builtins(self),
