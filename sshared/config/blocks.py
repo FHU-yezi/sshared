@@ -16,6 +16,21 @@ class ConfigBlock(
     pass
 
 
+class PostgresBlock(ConfigBlock, frozen=True):
+    host: NonEmptyStr
+    port: Annotated[int, Meta(gt=0, lt=65536)]
+    user: NonEmptyStr
+    password: NonEmptyStr
+    database: NonEmptyStr
+
+    @property
+    def connection_string(self) -> str:
+        return (
+            f"postgres://{self.user}:{self.password}"
+            f"@{self.host}:{self.port}/{self.database}"
+        )
+
+
 class MongoDBBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Annotated[int, Meta(gt=0, lt=65536)]
