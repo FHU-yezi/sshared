@@ -31,7 +31,7 @@ class PostgresBlock(ConfigBlock, frozen=True):
         )
 
 
-class MongoDBBlock(ConfigBlock, frozen=True):
+class MongoBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Annotated[int, Meta(gt=0, lt=65536)]
     database: NonEmptyStr
