@@ -7,13 +7,13 @@ from typing import Literal, Optional, Union
 from msgspec import to_builtins
 from pymongo.collection import Collection
 
-from sshared.terminal.color import Colors, fg_color
-from sshared.terminal.exception import get_exception_stack, pretty_exception
 from sshared.strict_struct import (
     NonEmptyStr,
     PositiveInt,
     StrictFrozenStruct,
 )
+from sshared.terminal.color import Colors, fg_color
+from sshared.terminal.exception import get_exception_stack, pretty_exception
 
 _LogLevels = Literal["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
 _ExtraType = Union[
