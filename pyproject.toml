@@ -1,43 +1,46 @@
-[tool.poetry]
+[project]
 name = "sshared"
 version = "0.9.0"
 description = "后端共享组件"
-authors = ["yezi <yehaowei20060411@qq.com>"]
-license = "MIT"
 readme = "README.md"
-repository = "https://github.com/FHU-yezi/sshared"
+license = {file = "LICENSE"}
+authors = [
+  {name = "FHU-yezi", email = "yehaowei20060411@qq.com"},
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
     "Typing :: Typed"
 ]
+requires-python = ">=3.9"
+dependencies = [
+    "msgspec>=0.18.0",
+    "typing-extensions>=4.12.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-msgspec = "^0.18.0"
-typing-extensions = "^4.12.0"
-motor = { version ="^3.3.0", optional = true }
-litestar = { version ="^2.9.0", optional = true }
-tomli = { version ="^2.0.0", optional = true }
+[project.optional-dependencies]
+api = [
+    "litestar>=2.12.0",
+]
+config = [
+    "tomli>=2.0.0",
+]
+mongo = [
+    "motor>=3.6.0",
+]
+postgres = [
+    "psycopg>=3.2.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.6.0"
-pyright = "^1.1.0"
-
-[tool.poetry.extras]
-api = ["litestar"]
-config = ["tomli"]
-mongo = ["motor"]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv]
+dev-dependencies = [
+    "pyright>=1.1.0",
+    "ruff>=0.6.0",
+]
 
 [tool.ruff]
-
-target-version = "py38"
-
+target-version = "py39"
 lint.select = [
     "A", "ANN", "ARG", "ASYNC", "B",
     "BLE", "C4", "E", "F", "I",
