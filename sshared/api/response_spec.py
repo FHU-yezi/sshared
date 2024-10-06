@@ -1,4 +1,5 @@
-from typing import Optional, Sequence, Type, Union
+from collections.abc import Sequence
+from typing import Optional, Union
 
 from litestar.openapi.datastructures import ResponseSpec
 
@@ -7,7 +8,7 @@ from .structs import ErrorStruct, ResponseStruct
 
 def success_response_spec(
     response_obj: Optional[
-        Union[Type[ResponseStruct], Type[Sequence[ResponseStruct]]]
+        Union[type[ResponseStruct], type[Sequence[ResponseStruct]]]
     ] = None,
     description: str = "请求成功",
 ) -> ResponseSpec:

@@ -1,6 +1,7 @@
+from collections.abc import AsyncGenerator, Sequence
 from datetime import datetime
 from enum import Enum
-from typing import Any, AsyncGenerator, Dict, List, Literal, Optional, Sequence
+from typing import Any, Literal, Optional
 
 from bson import ObjectId
 from motor.core import AgnosticCollection
@@ -12,8 +13,8 @@ from sshared.validatable_struct import ValidatableFrozenSturct
 
 from .meta import Index
 
-DocumentType = Dict[str, Any]
-SortType = Dict[str, Literal["ASC", "DESC"]]
+DocumentType = dict[str, Any]
+SortType = dict[str, Literal["ASC", "DESC"]]
 
 
 class Field(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
@@ -43,7 +44,7 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
         return result
 
     @classmethod
-    def _sort(cls, sort: SortType, /) -> Dict[str, int]:
+    def _sort(cls, sort: SortType, /) -> dict[str, int]:
         return {key: 1 if order == "ASC" else -1 for key, order in sort.items()}
 
     def validate(self) -> Self:
@@ -58,7 +59,7 @@ class Document(ValidatableFrozenSturct, frozen=True, eq=False, rename="camel"):
 
     @classmethod
     async def ensure_indexes(cls) -> None:
-        index_models: List[IndexModel] = []
+        index_models: list[IndexModel] = []
 
         for index in cls.Meta.indexes:
             index.validate()

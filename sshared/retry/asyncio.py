@@ -1,6 +1,6 @@
 from asyncio import sleep
 from functools import wraps
-from typing import Any, Callable, Optional, Tuple, Type, Union
+from typing import Any, Callable, Optional, Union
 
 from .event import RetryEvent
 
@@ -9,7 +9,7 @@ def retry(
     *,
     attempts: int = 3,
     delay: Union[int, float, Callable[[int], Union[int, float]]] = 3,
-    exceptions: Union[Type[Exception], Tuple[Type[Exception], ...]] = (Exception,),
+    exceptions: Union[type[Exception], tuple[type[Exception], ...]] = (Exception,),
     on_retry: Optional[Callable[[RetryEvent], None]] = None,
 ) -> Callable:
     def outer(func: Callable) -> Callable:

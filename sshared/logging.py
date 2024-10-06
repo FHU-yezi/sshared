@@ -2,7 +2,7 @@ from collections import deque
 from datetime import datetime
 from threading import Lock, Thread
 from time import sleep
-from typing import Dict, Literal, Optional, Tuple, Union
+from typing import Literal, Optional, Union
 
 from msgspec import to_builtins
 from pymongo.collection import Collection
@@ -29,7 +29,7 @@ class _LogLevelConfigItem(ValidatableFrozenSturct, frozen=True, eq=False, gc=Fal
     color: Colors
 
 
-_LogLevelConfig: Dict[_LogLevels, _LogLevelConfigItem] = {
+_LogLevelConfig: dict[_LogLevels, _LogLevelConfigItem] = {
     "DEBUG": _LogLevelConfigItem(num=1, color="BLUE").validate(),
     "INFO": _LogLevelConfigItem(num=2, color="GREEN").validate(),
     "WARN": _LogLevelConfigItem(num=3, color="YELLOW").validate(),
@@ -52,14 +52,14 @@ class _ExceptionField(
 ):
     name: NonEmptyStr
     desc: Optional[str]
-    stack: Optional[Tuple[_ExceptionStackField, ...]]
+    stack: Optional[tuple[_ExceptionStackField, ...]]
 
 
 class _Record(ValidatableFrozenSturct, rename="camel", frozen=True, eq=False, gc=False):
     time: datetime
     level: _LogLevels
     msg: NonEmptyStr
-    extra: Optional[Dict[NonEmptyStr, _ExtraType]]
+    extra: Optional[dict[NonEmptyStr, _ExtraType]]
     exc: Optional[_ExceptionField]
 
 

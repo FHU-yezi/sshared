@@ -1,9 +1,9 @@
-from typing import Dict, Literal
+from typing import Literal
 
 Colors = Literal["BLACK", "RED", "GREEN", "YELLOW", "BLUE", "MAGENTA", "CYAN", "WHITE"]
 
 _RESET = "\033[0m"
-_FOREGROUND_COLORS: Dict[Colors, int] = {
+_FOREGROUND_COLORS: dict[Colors, int] = {
     "BLACK": 30,
     "RED": 31,
     "GREEN": 32,
@@ -13,7 +13,7 @@ _FOREGROUND_COLORS: Dict[Colors, int] = {
     "CYAN": 36,
     "WHITE": 37,
 }
-_BACKGROUND_COLORS: Dict[Colors, int] = {
+_BACKGROUND_COLORS: dict[Colors, int] = {
     "BLACK": 40,
     "RED": 41,
     "GREEN": 42,

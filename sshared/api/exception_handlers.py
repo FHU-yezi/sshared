@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any
 
 from litestar import Request, Response
 from litestar.exceptions import ValidationException
@@ -20,7 +20,7 @@ from .response import error
 
 
 def _generate_details_from_validation_exception_extra(
-    extra: List[Dict[str, Any]],
+    extra: list[dict[str, Any]],
 ) -> str:
     result = []
     for item in extra:
