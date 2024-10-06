@@ -5,7 +5,7 @@ from psycopg.connection_async import AsyncConnection
 from psycopg.types.enum import EnumInfo, register_enum
 
 
-async def init_enum(
+async def create_enum(
     *,
     conn: AsyncConnection,
     name: str,
