@@ -1,22 +1,20 @@
 from collections.abc import AsyncGenerator, Sequence
 from datetime import datetime
 from enum import Enum
-from typing import Any, Literal, Optional, TypeVar
+from typing import Optional, TypeVar
 
 from bson import ObjectId
 from motor.core import AgnosticCollection
 from msgspec import convert, to_builtins
 from pymongo import IndexModel
 
+from sshared.mongo.types import DocumentType, SortType
 from sshared.strict_struct import StrictFrozenStruct
 
 from .meta import Index
 
 T = TypeVar("T", bound="Field")
 P = TypeVar("P", bound="Document")
-
-DocumentType = dict[str, Any]
-SortType = dict[str, Literal["ASC", "DESC"]]
 
 
 class Field(StrictFrozenStruct, frozen=True, eq=False, rename="camel"):

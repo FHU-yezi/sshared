@@ -9,6 +9,7 @@ ExtraType = Union[
     None,
 ]
 
+
 class LogLevelEnum(Enum):
     DEBUG = "DEBUG"
     INFO = "INFO"
