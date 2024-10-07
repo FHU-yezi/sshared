@@ -2,7 +2,7 @@ from typing import Annotated, Literal
 
 from msgspec import Meta
 
-from sshared.logging import _LogLevels
+from sshared.logging.types import LogLevelEnum
 from sshared.strict_struct import NonEmptyStr, PositiveInt, StrictFrozenStruct
 
 
@@ -39,8 +39,8 @@ class MongoBlock(ConfigBlock, frozen=True):
 
 class LoggingBlock(ConfigBlock, frozen=True):
     enable_save: bool
-    display_level: _LogLevels
-    save_level: _LogLevels
+    display_level: LogLevelEnum
+    save_level: LogLevelEnum
 
 
 class UvicornBlock(ConfigBlock, frozen=True):
