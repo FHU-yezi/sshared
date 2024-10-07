@@ -1,14 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
-from psycopg import Connection
-from psycopg.types.enum import EnumInfo, register_enum
-from psycopg.types.json import Jsonb
-
 from sshared.logging.config import LOG_LEVEL_CONFIG
 from sshared.logging.record import ExceptionField, ExceptionStackField, Record
 from sshared.logging.types import ExtraType, LogLevelEnum
-from sshared.postgres import enhance_json_process
 from sshared.terminal.color import fg_color
 from sshared.terminal.exception import get_exception_stack
 
@@ -24,12 +19,17 @@ class Logger:
         self._save_level_num = LOG_LEVEL_CONFIG[save_level].num
 
         if connection_string:
+            from psycopg import Connection
             self._conn = Connection.connect(connection_string, autocommit=True)
             self._init_db()
         else:
             self._conn = None
 
     def _init_db(self) -> None:
+        from psycopg.types.enum import EnumInfo, register_enum
+
+        from sshared.postgres import enhance_json_process
+
         if self._conn is None:
             raise Exception("未设置 Connection String，无法将日志保存到数据库")
 
@@ -92,6 +92,8 @@ class Logger:
                     )
 
     def _save(self, record: Record) -> None:
+        from psycopg.types.json import Jsonb
+
         if self._conn is None:
             raise Exception("未设置 Connection String，无法将日志保存到数据库")
 
