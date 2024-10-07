@@ -1,7 +1,9 @@
-from sshared.strict_struct import StrictStruct
+from sshared.strict_struct import StrictFrozenStruct
 
 
-class MaterializedView(StrictStruct, eq=False, forbid_unknown_fields=True):
+class MaterializedView(
+    StrictFrozenStruct, frozen=True, eq=False, forbid_unknown_fields=True
+):
     @classmethod
     async def _create_materialized_view(cls) -> None:
         pass

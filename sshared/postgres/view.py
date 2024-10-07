@@ -1,7 +1,7 @@
-from sshared.strict_struct import StrictStruct
+from sshared.strict_struct import StrictFrozenStruct
 
 
-class View(StrictStruct, eq=False, forbid_unknown_fields=True):
+class View(StrictFrozenStruct, frozen=True, eq=False, forbid_unknown_fields=True):
     @classmethod
     async def _create_view(cls) -> None:
         pass

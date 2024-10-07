@@ -1,7 +1,7 @@
-from sshared.strict_struct import StrictStruct
+from sshared.strict_struct import StrictFrozenStruct
 
 
-class Table(StrictStruct, eq=False, forbid_unknown_fields=True):
+class Table(StrictFrozenStruct, frozen=True, eq=False, forbid_unknown_fields=True):
     @classmethod
     async def _create_enum(cls) -> None:
         pass
