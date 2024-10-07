@@ -42,6 +42,13 @@ class LoggingBlock(ConfigBlock, frozen=True):
     save_level: LogLevelEnum
 
 
+class GotifyBlock(ConfigBlock, frozen=True):
+    enabled: bool
+    host: str
+    port: Annotated[int, Meta(gt=0, lt=65536)]
+    token: str
+
+
 class UvicornBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Annotated[int, Meta(gt=0, lt=65536)]
