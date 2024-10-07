@@ -20,6 +20,7 @@ class Logger:
 
         if connection_string:
             from psycopg import Connection
+
             self._conn = Connection.connect(connection_string, autocommit=True)
             self._init_db()
         else:
