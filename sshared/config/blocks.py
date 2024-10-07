@@ -16,6 +16,12 @@ class ConfigBlock(
     pass
 
 
+class MongoBlock(ConfigBlock, frozen=True):
+    host: NonEmptyStr
+    port: Annotated[int, Meta(gt=0, lt=65536)]
+    database: NonEmptyStr
+
+
 class PostgresBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Annotated[int, Meta(gt=0, lt=65536)]
@@ -31,14 +37,7 @@ class PostgresBlock(ConfigBlock, frozen=True):
         )
 
 
-class MongoBlock(ConfigBlock, frozen=True):
-    host: NonEmptyStr
-    port: Annotated[int, Meta(gt=0, lt=65536)]
-    database: NonEmptyStr
-
-
 class LoggingBlock(ConfigBlock, frozen=True):
-    enable_save: bool
     display_level: LogLevelEnum
     save_level: LogLevelEnum
 

@@ -568,7 +568,7 @@ wheels = [
 
 [[package]]
 name = "sshared"
-version = "0.11.1"
+version = "0.12.0"
 source = { virtual = "." }
 dependencies = [
     { name = "msgspec" },
@@ -584,6 +584,9 @@ config = [
 mongo = [
     { name = "motor" },
 ]
+notifier = [
+    { name = "httpx" },
+]
 postgres = [
     { name = "psycopg" },
 ]
@@ -596,6 +599,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "httpx", marker = "extra == 'notifier'", specifier = ">=0.27.0" },
     { name = "litestar", marker = "extra == 'api'", specifier = ">=2.12.0" },
     { name = "motor", marker = "extra == 'mongo'", specifier = ">=3.6.0" },
     { name = "msgspec", specifier = ">=0.18.0" },
