@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Optional
 
+from psycopg import sql
+
 from sshared.logging.config import LOG_LEVEL_CONFIG
 from sshared.logging.record import ExceptionField, ExceptionStackField, Record
 from sshared.logging.types import ExtraType, LogLevelEnum
@@ -14,19 +16,24 @@ class Logger:
         display_level: LogLevelEnum = LogLevelEnum.DEBUG,
         save_level: LogLevelEnum = LogLevelEnum.DEBUG,
         connection_string: Optional[str] = None,
+        table: Optional[str] = None,
     ) -> None:
         self._display_level_num = LOG_LEVEL_CONFIG[display_level].num
         self._save_level_num = LOG_LEVEL_CONFIG[save_level].num
 
-        if connection_string:
+        if connection_string and table:
             from psycopg import Connection
 
             self._conn = Connection.connect(connection_string, autocommit=True)
-            self._init_db()
+            self._insert_statement = sql.SQL(
+                "INSERT INTO {} (time, level, msg, extra, exception) "
+                "VALUES (%s, %s, %s, %s, %s);"
+            ).format(sql.Identifier(table))
+            self._init_db(table)
         else:
             self._conn = None
 
-    def _init_db(self) -> None:
+    def _init_db(self, table: str) -> None:
         from psycopg.types.enum import EnumInfo, register_enum
 
         from sshared.postgres import enhance_json_process
@@ -51,8 +58,8 @@ class Logger:
         register_enum(enum_info, self._conn, LogLevelEnum)  # type: ignore
 
         self._conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS logs (
+            sql.SQL("""
+            CREATE TABLE IF NOT EXISTS {} (
                 id serial PRIMARY KEY,
                 time TIMESTAMP NOT NULL,
                 level enum_logs_level NOT NULL,
@@ -60,7 +67,7 @@ class Logger:
                 extra JSONB,
                 exception JSONB
             )
-            """
+            """).format(sql.Identifier(table))
         )
 
     def _print(self, record: Record) -> None:
@@ -99,8 +106,7 @@ class Logger:
             raise Exception("未设置 Connection String，无法将日志保存到数据库")
 
         self._conn.execute(
-            "INSERT INTO logs (time, level, msg, extra, exception) "
-            "VALUES (%s, %s, %s, %s, %s);",
+            self._insert_statement,
             (
                 record.time,
                 record.level,
