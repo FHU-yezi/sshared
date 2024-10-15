@@ -31,15 +31,17 @@ class PostgresBlock(ConfigBlock, frozen=True):
 
     @property
     def connection_string(self) -> str:
-        return (
-            f"postgres://{self.user}:{self.password}"
-            f"@{self.host}:{self.port}/{self.database}"
-        )
+        return f"postgres://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+
+    @property
+    def logging_connection_string(self) -> str:
+        return f"postgres://{self.user}:{self.password}@{self.host}:{self.port}/logs"
 
 
 class LoggingBlock(ConfigBlock, frozen=True):
     display_level: LogLevelEnum
     save_level: LogLevelEnum
+    table: str
 
 
 class GotifyBlock(ConfigBlock, frozen=True):
