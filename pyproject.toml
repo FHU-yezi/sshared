@@ -1,6 +1,6 @@
 [project]
 name = "sshared"
-version = "0.14.0"
+version = "0.15.0"
 description = "后端共享组件"
 readme = "README.md"
 license = {file = "LICENSE"}

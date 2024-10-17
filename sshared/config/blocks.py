@@ -60,6 +60,11 @@ class UvicornBlock(ConfigBlock, frozen=True):
     access_log: bool
 
 
+class AliyunAccessKeyBlock(ConfigBlock, frozen=True):
+    access_key_id: str
+    access_key_secret: str
+
+
 class FeishuAuthBlock(ConfigBlock, frozen=True):
     app_id: NonEmptyStr
     app_secret: NonEmptyStr
