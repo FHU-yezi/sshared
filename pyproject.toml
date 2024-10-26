@@ -1,6 +1,6 @@
 [project]
 name = "sshared"
-version = "0.15.0"
+version = "0.16.0"
 description = "后端共享组件"
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -38,7 +38,7 @@ postgres = [
 [tool.uv]
 dev-dependencies = [
     "pyright>=1.1.0",
-    "ruff>=0.6.0",
+    "ruff>=0.7.0",
 ]
 
 [tool.ruff]
