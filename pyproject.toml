@@ -38,7 +38,7 @@ postgres = [
 [tool.uv]
 dev-dependencies = [
     "pyright>=1.1.0",
-    "ruff>=0.6.0",
+    "ruff>=0.7.0",
 ]
 
 [tool.ruff]
