@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-from psycopg import sql
-
 from sshared.logging.config import LOG_LEVEL_CONFIG
 from sshared.logging.record import ExceptionField, ExceptionStackField, Record
 from sshared.logging.types import ExtraType, LogLevelEnum
@@ -22,28 +20,33 @@ class Logger:
         self._save_level_num = LOG_LEVEL_CONFIG[save_level].num
 
         if connection_string and table:
-            from psycopg import Connection
+            from psycopg import sql
 
-            self._conn = Connection.connect(connection_string, autocommit=True)
+            from sshared.postgres import SyncConnectionManager
+
+            self._connection_manager = SyncConnectionManager(connection_string)
             self._insert_statement = sql.SQL(
                 "INSERT INTO {} (time, level, msg, extra, exception) "
                 "VALUES (%s, %s, %s, %s, %s);"
             ).format(sql.Identifier(table))
             self._init_db(table)
         else:
-            self._conn = None
+            self._connection_manager = None
 
     def _init_db(self, table: str) -> None:
+        from psycopg import sql
         from psycopg.types.enum import EnumInfo, register_enum
 
         from sshared.postgres import enhance_json_process
 
-        if self._conn is None:
+        if self._connection_manager is None:
             raise Exception("未设置 Connection String，无法将日志保存到数据库")
 
         enhance_json_process()
 
-        self._conn.execute(
+        conn = self._connection_manager.get_conn()
+
+        conn.execute(
             """
             DO $$
             BEGIN
@@ -54,10 +57,10 @@ class Logger:
             $$;
             """  # noqa: E501
         )
-        enum_info = EnumInfo.fetch(self._conn, "enum_logs_level")
-        register_enum(enum_info, self._conn, LogLevelEnum)  # type: ignore
+        enum_info = EnumInfo.fetch(conn, "enum_logs_level")
+        register_enum(enum_info, conn, LogLevelEnum)  # type: ignore
 
-        self._conn.execute(
+        conn.execute(
             sql.SQL("""
             CREATE TABLE IF NOT EXISTS {} (
                 id serial PRIMARY KEY,
@@ -102,10 +105,10 @@ class Logger:
     def _save(self, record: Record) -> None:
         from psycopg.types.json import Jsonb
 
-        if self._conn is None:
+        if self._connection_manager is None:
             raise Exception("未设置 Connection String，无法将日志保存到数据库")
 
-        self._conn.execute(
+        self._connection_manager.get_conn().execute(
             self._insert_statement,
             (
                 record.time,
@@ -114,6 +117,7 @@ class Logger:
                 Jsonb(record.extra) if record.extra else None,
                 Jsonb(record.exception) if record.exception else None,
             ),
+            prepare=True,
         )
 
     def _log(
@@ -156,7 +160,7 @@ class Logger:
 
         if (
             LOG_LEVEL_CONFIG[level].num >= self._save_level_num
-            and self._conn is not None
+            and self._connection_manager is not None
         ):
             self._save(record)
 
