@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from litestar import Request, Response
@@ -14,7 +15,7 @@ from litestar.status_codes import (
 )
 from litestar.types import ExceptionHandlersMap
 
-from sshared.time import get_now_without_microsecond
+from sshared.time import without_microsecond
 
 from .response import error
 
@@ -52,7 +53,8 @@ def _method_not_allowd_exception_handler(_: Request, __: Exception) -> Response:
 
 def _internal_server_error_handler(_: Request, exception: Exception) -> Response:
     print(
-        f"[{get_now_without_microsecond()}] 处理请求时发生异常：{exception.__repr__()}"
+        f"[{without_microsecond(datetime.now())}] "
+        f"处理请求时发生异常：{exception.__repr__()}"
     )
 
     return error(
