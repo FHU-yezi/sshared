@@ -22,7 +22,7 @@ class Logger:
         if connection_string and table:
             from psycopg import sql
 
-            from sshared.postgres import SyncConnectionManager
+            from sshared.postgres.connection_manager import SyncConnectionManager
 
             self._connection_manager = SyncConnectionManager(connection_string)
             self._insert_statement = sql.SQL(
