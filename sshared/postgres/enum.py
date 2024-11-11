@@ -14,14 +14,14 @@ async def create_enum(
     await conn.execute(
         sql.SQL(
             """
-        DO $$
-        BEGIN
-            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = {}) THEN
-                CREATE TYPE {} AS ENUM ({});
-            END IF;
-        END
-        $$;
-        """
+            DO $$
+            BEGIN
+                IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = {}) THEN
+                    CREATE TYPE {} AS ENUM ({});
+                END IF;
+            END
+            $$;
+            """
         ).format(
             sql.Literal(name),
             sql.Identifier(name),
