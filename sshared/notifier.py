@@ -1,4 +1,6 @@
-from typing import Literal, Optional
+from __future__ import annotations
+
+from typing import Literal
 
 from httpx import AsyncClient
 
@@ -16,7 +18,8 @@ class Notifier:
     async def send_message(
         self,
         message: str,
-        title: Optional[str] = None,
+        *,
+        title: str | None = None,
         priority: Priority = "MEDIUM",
         markdown: bool = False,
     ) -> None:

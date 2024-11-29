@@ -1,17 +1,23 @@
-from collections.abc import AsyncGenerator, Sequence
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
-from typing import Optional, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 from bson import ObjectId
-from motor.core import AgnosticCollection
 from msgspec import convert, to_builtins
 from pymongo import IndexModel
 
-from sshared.mongo.types import DocumentType, SortType
 from sshared.strict_struct import StrictFrozenStruct
 
-from .meta import Index
+if TYPE_CHECKING:
+    from collections.abc import AsyncGenerator, Sequence
+
+    from motor.core import AgnosticCollection
+
+    from sshared.mongo.types import DocumentType, SortType
+
+    from .meta import Index
 
 T = TypeVar("T", bound="Field")
 P = TypeVar("P", bound="Document")
@@ -35,9 +41,9 @@ class Document(StrictFrozenStruct, frozen=True, eq=False, rename="camel"):
         result: DocumentType = {}
         for key, value in data.items():
             if isinstance(value, dict):
-                value = cls._process_dict(value)
+                value = cls._process_dict(value)  # noqa: PLW2901
             if isinstance(value, Enum):
-                value = value.value
+                value = value.value  # noqa: PLW2901
 
             result[key] = value
 
@@ -98,11 +104,11 @@ class Document(StrictFrozenStruct, frozen=True, eq=False, rename="camel"):
     @classmethod
     async def find_one(
         cls: type[P],
-        filter: Optional[DocumentType] = None,  # noqa: A002
+        filter: DocumentType | None = None,  # noqa: A002
         /,
         *,
-        sort: Optional[SortType] = None,
-    ) -> Optional[P]:
+        sort: SortType | None = None,
+    ) -> P | None:
         cursor = cls.Meta.collection.find(
             cls._process_dict(filter) if filter else {}
         ).limit(1)
@@ -117,12 +123,12 @@ class Document(StrictFrozenStruct, frozen=True, eq=False, rename="camel"):
     @classmethod
     async def find_many(
         cls: type[P],
-        filter: Optional[DocumentType] = None,  # noqa: A002
+        filter: DocumentType | None = None,  # noqa: A002
         /,
         *,
-        sort: Optional[SortType] = None,
-        skip: Optional[int] = None,
-        limit: Optional[int] = None,
+        sort: SortType | None = None,
+        skip: int | None = None,
+        limit: int | None = None,
     ) -> AsyncGenerator[P, None]:
         cursor = cls.Meta.collection.find(cls._process_dict(filter) if filter else {})
         if sort:
@@ -149,7 +155,7 @@ class Document(StrictFrozenStruct, frozen=True, eq=False, rename="camel"):
     @classmethod
     async def count(
         cls,
-        filter: Optional[DocumentType] = None,  # noqa: A002
+        filter: DocumentType | None = None,  # noqa: A002
         /,
         *,
         fast: bool = False,
@@ -187,7 +193,7 @@ class Document(StrictFrozenStruct, frozen=True, eq=False, rename="camel"):
     @classmethod
     async def aggregate_one(
         cls, pipeline: Sequence[DocumentType]
-    ) -> Optional[DocumentType]:
+    ) -> DocumentType | None:
         try:
             await cls.Meta.collection.aggregate(pipeline).__anext__()  # type: ignore
         except StopAsyncIteration:

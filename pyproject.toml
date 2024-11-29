@@ -3,55 +3,72 @@ name = "sshared"
 version = "0.18.0"
 description = "后端共享组件"
 readme = "README.md"
-license = {file = "LICENSE"}
-authors = [
-  {name = "FHU-yezi", email = "yehaowei20060411@qq.com"},
-]
+license = { file = "LICENSE" }
+authors = [{ name = "FHU-yezi", email = "yehaowei20060411@qq.com" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3 :: Only",
-    "Typing :: Typed"
+    "Typing :: Typed",
 ]
 requires-python = ">=3.9"
-dependencies = [
-    "msgspec>=0.18.0",
-]
+dependencies = ["msgspec>=0.18.0"]
 
 [project.optional-dependencies]
-api = [
-    "litestar>=2.12.0",
-]
-config = [
-    "tomli>=2.0.0",
-]
-mongo = [
-    "motor>=3.6.0",
-]
-notifier = [
-    "httpx>=0.27.0",
-]
-postgres = [
-    "psycopg>=3.2.0",
-]
+api = ["litestar>=2.12.0"]
+config = ["tomli>=2.0.0"]
+mongo = ["motor>=3.6.0"]
+notifier = ["httpx>=0.27.0"]
+postgres = ["psycopg>=3.2.0"]
 
 [tool.uv]
-dev-dependencies = [
-    "pyright>=1.1.0",
-    "ruff>=0.7.0",
-]
+dev-dependencies = ["pyright>=1.1.0", "ruff>=0.8.0"]
 
 [tool.ruff]
 target-version = "py39"
 lint.select = [
-    "A", "ANN", "ARG", "ASYNC", "B",
-    "BLE", "C4", "E", "F", "I",
-    "ICN", "ISC", "N", "PERF", "PIE",
-    "PT", "Q", "RET", "RSE", "RUF",
-    "S", "SIM", "SLOT", "TCH", "UP",
-    "W"
+    "A",
+    "ANN",
+    "ARG",
+    "ASYNC",
+    "B",
+    "C4",
+    "E",
+    "F",
+    "FA",
+    "FBT",
+    "FURB",
+    "I",
+    "ISC",
+    "N",
+    "PERF",
+    "PIE",
+    "PL",
+    "PT",
+    "PTH",
+    "Q",
+    "RET",
+    "RSE",
+    "RUF",
+    "S",
+    "SIM",
+    "SLF",
+    "T20",
+    "TC",
+    "TID",
+    "TRY",
+    "UP",
+    "W",
 ]
-lint.ignore = ["ANN101", "ANN102", "ISC001", "RUF001", "RUF002", "RUF003"]
+lint.ignore = [
+    "ISC001",
+    "PERF203",
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "S311",
+    "TRY003",
+]
 
 [tool.ruff.lint.per-file-ignores]
 

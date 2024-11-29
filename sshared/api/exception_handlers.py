@@ -52,7 +52,7 @@ def _method_not_allowd_exception_handler(_: Request, __: Exception) -> Response:
 
 
 def _internal_server_error_handler(_: Request, exception: Exception) -> Response:
-    print(
+    print(  # noqa: T201
         f"[{without_microsecond(datetime.now())}] "
         f"处理请求时发生异常：{exception.__repr__()}"
     )

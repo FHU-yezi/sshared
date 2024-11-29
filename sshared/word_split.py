@@ -15,6 +15,10 @@ from msgspec.json import decode as json_decode
 _CHUNK_SEPARATOR: set[str] = {"，", "。", "？", "！", "\n"}
 
 
+class WordSplitError(Exception):
+    pass
+
+
 class WordSplitter:
     def __init__(
         self,
@@ -82,7 +86,7 @@ class WordSplitter:
             "Version": "2020-06-29",
             "Format": "JSON",
             "AccessKeyId": self._access_key_id,
-            "SignatureNonce": randint(10000, 99999),  # noqa: S311
+            "SignatureNonce": randint(10000, 99999),
             "SignatureMethod": "HMAC-SHA1",
             "SignatureVersion": "1.0",
             "Timestamp": datetime.now(timezone.utc).strftime(r"%Y-%m-%dT%H:%M:%SZ"),
@@ -132,11 +136,11 @@ class WordSplitter:
                 "https://alinlp.cn-hangzhou.aliyuncs.com", data=data
             )
         if not response.is_success:
-            raise Exception(f"分词接口返回失败 - {response.json()['Message']}")
+            raise WordSplitError(f"分词接口返回失败 - {response.json()['Message']}")
 
         data = json_decode(response.json()["Data"])
         if not data["success"]:
-            raise Exception("分词接口返回失败")
+            raise WordSplitError("分词接口返回失败")
 
         words = tuple(x["word"] for x in data["result"])
         return self._clean_splitted_words(words)

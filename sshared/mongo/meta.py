@@ -1,5 +1,6 @@
-from collections.abc import Sequence
-from typing import Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from sshared.strict_struct import (
     NonEmptyStr,
@@ -7,9 +8,12 @@ from sshared.strict_struct import (
     StrictFrozenStruct,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 
 class Index(StrictFrozenStruct, frozen=True, eq=False, gc=False):
     keys: Sequence[NonEmptyStr]
-    name: Optional[NonEmptyStr] = None
+    name: NonEmptyStr | None = None
     unique: bool = False
-    expire_after_seconds: Optional[PositiveInt] = None
+    expire_after_seconds: PositiveInt | None = None

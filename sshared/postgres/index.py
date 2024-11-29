@@ -14,7 +14,7 @@ _METHOD_MEPPING: dict[IndexMethod, str] = {
 }
 
 
-async def create_index(
+async def create_index(  # noqa: PLR0913
     *,
     conn: AsyncConnection,
     name: str,

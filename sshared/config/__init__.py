@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import TypeVar
 
 from msgspec.toml import decode
@@ -16,5 +17,4 @@ class ConfigBase(
 ):
     @classmethod
     def load_from_file(cls: type[T], file_name: str, /) -> T:
-        with open(file_name, "rb") as f:
-            return decode(f.read(), type=cls)
+        return decode(Path(file_name).read_bytes(), type=cls)
