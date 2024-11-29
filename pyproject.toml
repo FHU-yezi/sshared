@@ -18,7 +18,7 @@ dependencies = ["msgspec>=0.18.0"]
 api = ["litestar>=2.12.0"]
 config = ["tomli>=2.0.0"]
 notifier = ["httpx>=0.27.0"]
-postgres = ["psycopg>=3.2.0"]
+postgres = ["psycopg[binary]>=3.2.0"]
 
 [tool.uv]
 dev-dependencies = ["pyright>=1.1.0", "ruff>=0.8.0"]
