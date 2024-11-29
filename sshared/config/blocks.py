@@ -1,9 +1,7 @@
-from typing import Annotated, Literal
-
-from msgspec import Meta
+from typing import Literal
 
 from sshared.logging.types import LogLevelEnum
-from sshared.strict_struct import NonEmptyStr, PositiveInt, StrictFrozenStruct
+from sshared.strict_struct import NonEmptyStr, Port, PositiveInt, StrictFrozenStruct
 
 
 class ConfigBlock(
@@ -16,15 +14,9 @@ class ConfigBlock(
     pass
 
 
-class MongoBlock(ConfigBlock, frozen=True):
-    host: NonEmptyStr
-    port: Annotated[int, Meta(gt=0, lt=65536)]
-    database: NonEmptyStr
-
-
 class PostgresBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
-    port: Annotated[int, Meta(gt=0, lt=65536)]
+    port: Port
     user: NonEmptyStr
     password: NonEmptyStr
     database: NonEmptyStr
@@ -36,7 +28,7 @@ class PostgresBlock(ConfigBlock, frozen=True):
 
 class LoggingBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
-    port: Annotated[int, Meta(gt=0, lt=65536)]
+    port: Port
     user: NonEmptyStr
     password: NonEmptyStr
     table: str
@@ -51,13 +43,13 @@ class LoggingBlock(ConfigBlock, frozen=True):
 class GotifyBlock(ConfigBlock, frozen=True):
     enabled: bool
     host: str
-    port: Annotated[int, Meta(gt=0, lt=65536)]
+    port: Port
     token: str
 
 
 class UvicornBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
-    port: Annotated[int, Meta(gt=0, lt=65536)]
+    port: Port
     log_level: Literal["critical", "error", "warning", "info", "debug", "trace"]
     workers: PositiveInt
     reload: bool

@@ -1,16 +1,20 @@
-from collections.abc import Sequence
-from typing import Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from litestar import Response
 
 from .structs import ErrorStruct, ResponseStruct
 
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 
 def success(
-    data: Optional[Union[ResponseStruct, Sequence[ResponseStruct]]] = None,
+    data: ResponseStruct | Sequence[ResponseStruct] | None = None,
     /,
     *,
-    status_code: Optional[int] = None,
+    status_code: int | None = None,
 ) -> Response:
     if data:
         if isinstance(data, ResponseStruct):
@@ -22,7 +26,7 @@ def success(
     return Response(data, status_code=status_code)
 
 
-def error(*, status_code: int, message: str, details: Optional[str] = None) -> Response:
+def error(*, status_code: int, message: str, details: str | None = None) -> Response:
     return Response(
         ErrorStruct(message=message, details=details), status_code=status_code
     )

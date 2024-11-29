@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Optional
 
 from sshared.logging.config import LOG_LEVEL_CONFIG
 from sshared.logging.record import ExceptionField, ExceptionStackField, Record
@@ -8,13 +9,17 @@ from sshared.terminal.color import fg_color
 from sshared.terminal.exception import get_exception_stack
 
 
+class LoggerInitError(Exception):
+    pass
+
+
 class Logger:
     def __init__(
         self,
         display_level: LogLevelEnum = LogLevelEnum.DEBUG,
         save_level: LogLevelEnum = LogLevelEnum.DEBUG,
-        connection_string: Optional[str] = None,
-        table: Optional[str] = None,
+        connection_string: str | None = None,
+        table: str | None = None,
     ) -> None:
         self._display_level_num = LOG_LEVEL_CONFIG[display_level].num
         self._save_level_num = LOG_LEVEL_CONFIG[save_level].num
@@ -40,7 +45,7 @@ class Logger:
         from sshared.postgres import enhance_json_process
 
         if self._connection_manager is None:
-            raise Exception("未设置 Connection String，无法将日志保存到数据库")
+            raise LoggerInitError("未设置 Connection String，无法将日志保存到数据库")
 
         enhance_json_process()
 
@@ -74,21 +79,21 @@ class Logger:
         )
 
     def _print(self, record: Record) -> None:
-        print(
+        print(  # noqa: T201
             record.time.strftime(r"%y-%m-%d %H:%M:%S"),
             fg_color(f"{record.level.value:<5}", LOG_LEVEL_CONFIG[record.level].color),
             record.msg,
         )
 
         if record.extra:
-            print(
+            print(  # noqa: T201
                 "                       ",  # 与 msg 对齐
                 fg_color("Extra", "BLUE"),
                 " ".join(f"{key}={value}" for key, value in record.extra.items()),
             )
 
         if record.exception:
-            print(
+            print(  # noqa: T201
                 "                       ",  # 与 msg 对齐
                 fg_color("Exception", "RED"),
                 f"{record.exception.name}({record.exception.desc})",
@@ -96,7 +101,7 @@ class Logger:
 
             if record.exception.stack:
                 for x in record.exception.stack:
-                    print(
+                    print(  # noqa: T201
                         "                                 ",  # 与 Exception 主体对齐
                         f"at {x.file_name}:{x.line_number} ->",
                         f"{x.func_name} -> {x.line}",
@@ -106,7 +111,7 @@ class Logger:
         from psycopg.types.json import Jsonb
 
         if self._connection_manager is None:
-            raise Exception("未设置 Connection String，无法将日志保存到数据库")
+            raise LoggerInitError("未设置 Connection String，无法将日志保存到数据库")
 
         self._connection_manager.get_conn().execute(
             self._insert_statement,
@@ -126,7 +131,7 @@ class Logger:
         msg: str,
         *,
         level: LogLevelEnum,
-        exception: Optional[Exception],
+        exception: Exception | None,
         **kwargs: ExtraType,
     ) -> None:
         exc_stack = get_exception_stack(exception) if exception else None
@@ -171,16 +176,16 @@ class Logger:
         self._log(msg, level=LogLevelEnum.INFO, exception=None, **kwargs)
 
     def warn(
-        self, /, msg: str, exception: Optional[Exception] = None, **kwargs: ExtraType
+        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
         self._log(msg, level=LogLevelEnum.WARN, exception=exception, **kwargs)
 
     def error(
-        self, /, msg: str, exception: Optional[Exception] = None, **kwargs: ExtraType
+        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
         self._log(msg, level=LogLevelEnum.ERROR, exception=exception, **kwargs)
 
     def fatal(
-        self, /, msg: str, exception: Optional[Exception] = None, **kwargs: ExtraType
+        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
         self._log(msg, level=LogLevelEnum.FATAL, exception=exception, **kwargs)

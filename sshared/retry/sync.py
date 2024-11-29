@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from functools import wraps
 from time import sleep
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable
 
 from .event import RetryEvent
 
@@ -8,9 +10,9 @@ from .event import RetryEvent
 def retry(
     *,
     attempts: int = 3,
-    delay: Union[int, float, Callable[[int], Union[int, float]]] = 3,
-    exceptions: Union[type[Exception], tuple[type[Exception], ...]] = (Exception,),
-    on_retry: Optional[Callable[[RetryEvent], None]] = None,
+    delay: int | float | Callable[[int], int | float] = 3,
+    exceptions: type[Exception] | tuple[type[Exception], ...] = (Exception,),
+    on_retry: Callable[[RetryEvent], None] | None = None,
 ) -> Callable:
     def outer(func: Callable) -> Callable:
         @wraps(func)
@@ -22,7 +24,7 @@ def retry(
             while current_attempt < attempts:
                 try:
                     return func(*args, **kwargs)
-                except exceptions as e:  # noqa: PERF203
+                except exceptions as e:
                     current_delay = (
                         delay
                         if isinstance(delay, (int, float))

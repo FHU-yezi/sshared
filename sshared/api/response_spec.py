@@ -1,15 +1,17 @@
-from collections.abc import Sequence
-from typing import Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from litestar.openapi.datastructures import ResponseSpec
 
 from .structs import ErrorStruct, ResponseStruct
 
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 
 def success_response_spec(
-    response_obj: Optional[
-        Union[type[ResponseStruct], type[Sequence[ResponseStruct]]]
-    ] = None,
+    response_obj: type[ResponseStruct] | type[Sequence[ResponseStruct]] | None = None,
     description: str = "请求成功",
 ) -> ResponseSpec:
     return ResponseSpec(response_obj, generate_examples=False, description=description)

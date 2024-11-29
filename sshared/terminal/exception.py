@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from traceback import extract_tb
-from typing import Optional
 
 from sshared.strict_struct import StrictFrozenStruct
 
@@ -8,9 +9,9 @@ from .color import fg_color
 
 class _ExceptionStack(StrictFrozenStruct, frozen=True, eq=False):
     file_name: str
-    line_number: Optional[int]
+    line_number: int | None
     func_name: str
-    line: Optional[str]
+    line: str | None
 
 
 def get_exception_stack(exc: Exception, /) -> tuple[_ExceptionStack, ...]:

@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 from asyncio import Queue, QueueEmpty, sleep
 from contextlib import asynccontextmanager, suppress
 from random import random
-from typing import Optional
 
 from psycopg import AsyncConnection, OperationalError
 
@@ -13,7 +14,7 @@ class Pool:
         *,
         min_size: int,
         max_size: int,
-        app_name: Optional[str] = None,
+        app_name: str | None = None,
     ) -> None:
         self._connection_string = connection_string
         self._min_size = min_size
@@ -36,8 +37,8 @@ class Pool:
                     application_name=self._app_name,
                     sslmode="disable",
                 )
-            except OperationalError:  # noqa: PERF203
-                await sleep(random() / 4)  # noqa: S311
+            except OperationalError:
+                await sleep(random() / 4)
             else:
                 self._total_conns_count += 1
                 return conn

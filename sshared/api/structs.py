@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from msgspec import Struct
 
@@ -17,4 +17,4 @@ class ResponseStruct(StrictStruct, eq=False, rename="camel", gc=False):
 
 class ErrorStruct(ResponseStruct):
     message: str
-    details: Optional[str]
+    details: str | None

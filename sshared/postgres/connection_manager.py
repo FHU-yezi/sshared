@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from time import sleep as sync_sleep
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from psycopg import Connection
@@ -8,7 +10,7 @@ if TYPE_CHECKING:
 class SyncConnectionManager:
     def __init__(self, connection_string: str) -> None:
         self._connection_string = connection_string
-        self._conn: Optional[Connection] = None
+        self._conn: Connection | None = None
         self._connecting = False
 
     def _blocking_connect(self) -> None:
@@ -22,11 +24,12 @@ class SyncConnectionManager:
                     self._connection_string, autocommit=True
                 )
                 self._connecting = False
-                return
-            except OperationalError:  # noqa: PERF203
+            except OperationalError:
                 sync_sleep(0.1)
+            else:
+                return
 
-    def _blocking_waiting_for_conn(self) -> "Connection":
+    def _blocking_waiting_for_conn(self) -> Connection:
         while True:
             if self._conn:
                 return self._conn
@@ -41,11 +44,12 @@ class SyncConnectionManager:
 
         try:
             self._conn.execute("")
-            return True
         except OperationalError:
             return False
+        else:
+            return True
 
-    def get_conn(self) -> "Connection":
+    def get_conn(self) -> Connection:
         # 尚未连接
         if not self._conn:
             # 如果正在尝试连接，阻塞等待
