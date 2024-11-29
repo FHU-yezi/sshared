@@ -16,12 +16,6 @@ class ConfigBlock(
     pass
 
 
-class MongoBlock(ConfigBlock, frozen=True):
-    host: NonEmptyStr
-    port: Annotated[int, Meta(gt=0, lt=65536)]
-    database: NonEmptyStr
-
-
 class PostgresBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Annotated[int, Meta(gt=0, lt=65536)]
