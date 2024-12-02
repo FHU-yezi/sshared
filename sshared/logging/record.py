@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from datetime import datetime
 
+from sshared.logging.types import ExtraType, LogLevelEnum
 from sshared.strict_struct import NonEmptyStr, PositiveInt, StrictFrozenStruct
-
-if TYPE_CHECKING:
-    from datetime import datetime
-
-    from sshared.logging.types import ExtraType, LogLevelEnum
 
 
 class ExceptionStackField(StrictFrozenStruct, frozen=True, eq=False, gc=False):
