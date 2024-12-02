@@ -567,7 +567,7 @@ wheels = [
 
 [[package]]
 name = "sshared"
-version = "0.19.0"
+version = "0.19.1"
 source = { virtual = "." }
 dependencies = [
     { name = "msgspec" },
