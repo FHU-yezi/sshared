@@ -79,41 +79,41 @@ class Logger:
         )
 
     def _print(self, record: Record) -> None:
-        pending_string: list[str] = [
+        main_string: list[str] = [
             record.time.strftime(r"%y-%m-%d %H:%M:%S"),
             fg_color(f"{record.level.value:<5}", LOG_LEVEL_CONFIG[record.level].color),
             record.msg,
         ]
 
         if record.extra:
-            pending_string.extend(
-                [
-                    "\n                       ",  # 与 msg 对齐
-                    fg_color("Extra", "BLUE"),
-                    " ".join(f"{key}={value}" for key, value in record.extra.items()),
-                ]
-            )
+            main_string.extend(f"{key}={value}" for key, value in record.extra.items())
+
+        print(" ".join(main_string))  # noqa: T201
 
         if record.exception:
-            pending_string.extend(
-                [
-                    "\n                       ",  # 与 msg 对齐
-                    fg_color("Exception", "RED"),
-                    f"{record.exception.name}({record.exception.desc})",
-                ]
-            )
+            exception_string: list[str] = [
+                fg_color("Exception", "RED"),
+                f"{record.exception.name}({record.exception.desc})",
+            ]
 
             if record.exception.stack:
                 for x in record.exception.stack:
-                    pending_string.extend(
+                    exception_string.extend(
                         [
-                            "\n                                 ",  # 与 Exception 主体对齐  # noqa: E501
+                            "\n    ",
                             f"at {x.file_name}:{x.line_number} ->",
                             f"{x.func_name} -> {x.line}",
                         ]
                     )
 
-        print(" ".join(pending_string))  # noqa: T201
+            print(  # noqa: T201
+                "                       ",  # 首行缩进
+                " ".join(
+                    # 对每一行进行缩进
+                    x.replace("\n", "\n                       ")
+                    for x in exception_string
+                ),
+            )
 
     def _save(self, record: Record) -> None:
         from psycopg.types.json import Jsonb
