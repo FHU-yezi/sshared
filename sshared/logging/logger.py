@@ -79,33 +79,41 @@ class Logger:
         )
 
     def _print(self, record: Record) -> None:
-        print(  # noqa: T201
+        pending_string: list[str] = [
             record.time.strftime(r"%y-%m-%d %H:%M:%S"),
             fg_color(f"{record.level.value:<5}", LOG_LEVEL_CONFIG[record.level].color),
             record.msg,
-        )
+        ]
 
         if record.extra:
-            print(  # noqa: T201
-                "                       ",  # 与 msg 对齐
-                fg_color("Extra", "BLUE"),
-                " ".join(f"{key}={value}" for key, value in record.extra.items()),
+            pending_string.extend(
+                [
+                    "\n                       ",  # 与 msg 对齐
+                    fg_color("Extra", "BLUE"),
+                    " ".join(f"{key}={value}" for key, value in record.extra.items()),
+                ]
             )
 
         if record.exception:
-            print(  # noqa: T201
-                "                       ",  # 与 msg 对齐
-                fg_color("Exception", "RED"),
-                f"{record.exception.name}({record.exception.desc})",
+            pending_string.extend(
+                [
+                    "\n                       ",  # 与 msg 对齐
+                    fg_color("Exception", "RED"),
+                    f"{record.exception.name}({record.exception.desc})",
+                ]
             )
 
             if record.exception.stack:
                 for x in record.exception.stack:
-                    print(  # noqa: T201
-                        "                                 ",  # 与 Exception 主体对齐
-                        f"at {x.file_name}:{x.line_number} ->",
-                        f"{x.func_name} -> {x.line}",
+                    pending_string.extend(
+                        [
+                            "\n                                 ",  # 与 Exception 主体对齐  # noqa: E501
+                            f"at {x.file_name}:{x.line_number} ->",
+                            f"{x.func_name} -> {x.line}",
+                        ]
                     )
+
+        print(" ".join(pending_string))  # noqa: T201
 
     def _save(self, record: Record) -> None:
         from psycopg.types.json import Jsonb
