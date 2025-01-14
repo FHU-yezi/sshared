@@ -38,7 +38,7 @@ def pretty_exception(exc: Exception, /) -> str:
     for item in get_exception_stack(exc):
         file_name_and_line_number = f"  {item.file_name}:{item.line_number}"
         result.append(
-            f"{file_name_and_line_number:<25}" f" > {item.func_name:<10} | {item.line}"
+            f"{file_name_and_line_number:<25} > {item.func_name:<10} | {item.line}"
         )
 
     return "\n".join(result)
