@@ -72,5 +72,7 @@ lint.ignore = [
     "TRY003",
 ]
 
+lint.flake8-builtins.builtins-ignorelist = ["id", "range", "type"]
+
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
