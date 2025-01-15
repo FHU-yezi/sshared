@@ -40,7 +40,6 @@ class Logger:
 
     def _init_db(self, table: str) -> None:
         from psycopg import sql
-        from psycopg.types.enum import EnumInfo, register_enum
 
         from sshared.postgres import enhance_json_process
 
@@ -62,8 +61,6 @@ class Logger:
             $$;
             """  # noqa: E501
         )
-        enum_info = EnumInfo.fetch(conn, "enum_logs_level")
-        register_enum(enum_info, conn, LogLevelEnum)  # type: ignore
 
         conn.execute(
             sql.SQL("""
@@ -125,7 +122,7 @@ class Logger:
             self._insert_statement,
             (
                 record.time,
-                record.level,
+                record.level.value,
                 record.msg,
                 Jsonb(record.extra) if record.extra else None,
                 Jsonb(record.exception) if record.exception else None,

@@ -58,7 +58,7 @@ class SyncConnectionManager:
 
             # 否则，尝试连接并返回
             self._blocking_connect()
-            return self._conn # type: ignore
+            return self._conn  # type: ignore
 
         # 已连接，检查状态
         ok = self._check()
