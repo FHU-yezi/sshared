@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from asyncio import Queue, QueueEmpty, sleep
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager, suppress
 from random import random
 
@@ -87,7 +88,7 @@ class Pool:
             await self.close_conn(conn)
 
     @asynccontextmanager
-    async def get_conn(self):  # noqa: ANN201
+    async def get_conn(self) -> AsyncGenerator[AsyncConnection]:
         """获取连接。
 
         如果没有可用的连接，该函数将阻塞，直到有连接可用。
