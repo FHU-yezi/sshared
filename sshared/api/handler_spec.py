@@ -12,7 +12,7 @@ from litestar.status_codes import (
 from .structs import ErrorStruct, ResponseStruct
 
 
-def get_handler_spec(  # noqa: PLR0913
+def get_handler_spec_params(  # noqa: PLR0913
     *,
     name: str,
     success_status_code: int,
