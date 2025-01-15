@@ -1,5 +1,5 @@
 from .exception_handlers import EXCEPTION_HANDLERS
-from .openapi import generate_openapi_config_params
+from .handler_spec import get_handler_spec
+from .openapi import OPENAPI_CONFIG_PARAMS
 from .response import error, success
-from .response_spec import error_response_spec, success_response_spec
 from .structs import RequestStruct, ResponseStruct

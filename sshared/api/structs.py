@@ -2,19 +2,30 @@ from __future__ import annotations
 
 from msgspec import Struct
 
-from sshared.strict_struct import StrictStruct
+from sshared.strict_struct import StrictFrozenStruct
 
 
 class RequestStruct(
-    Struct, eq=False, forbid_unknown_fields=True, rename="camel", gc=False
+    Struct,
+    frozen=True,
+    eq=False,
+    forbid_unknown_fields=True,
+    rename="camel",
+    gc=False,
 ):
     pass
 
 
-class ResponseStruct(StrictStruct, eq=False, rename="camel", gc=False):
+class ResponseStruct(
+    StrictFrozenStruct,
+    frozen=True,
+    eq=False,
+    rename="camel",
+    gc=False,
+):
     pass
 
 
-class ErrorStruct(ResponseStruct):
+class ErrorStruct(ResponseStruct, frozen=True):
     message: str
     details: str | None

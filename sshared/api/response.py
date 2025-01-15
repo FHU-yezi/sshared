@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from collections.abc import Sequence
 
 from litestar import Response
 
 from .structs import ErrorStruct, ResponseStruct
-
-if TYPE_CHECKING:
-    from collections.abc import Sequence
 
 
 def success(
@@ -19,7 +16,7 @@ def success(
     if data:
         if isinstance(data, ResponseStruct):
             data.validate()
-        if isinstance(data, (list, tuple, set)):
+        else:
             for item in data:
                 item.validate()
 
