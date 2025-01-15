@@ -104,10 +104,10 @@ class Logger:
                     )
 
             print(  # noqa: T201
-                "                       ",  # 首行缩进
+                "                 ",  # 首行缩进
                 " ".join(
                     # 对每一行进行缩进
-                    x.replace("\n", "\n                       ")
+                    x.replace("\n", "\n               ")
                     for x in exception_string
                 ),
             )
