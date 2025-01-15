@@ -50,10 +50,8 @@ class GotifyBlock(ConfigBlock, frozen=True):
 class UvicornBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Port
-    log_level: Literal["critical", "error", "warning", "info", "debug", "trace"]
+    mode: Literal["DEBUG", "PROD"]
     workers: PositiveInt
-    reload: bool
-    access_log: bool
 
 
 class AliyunAccessKeyBlock(ConfigBlock, frozen=True):
