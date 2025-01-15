@@ -3,7 +3,6 @@ from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from typing import Callable
 
 from litestar import Litestar
-from litestar.exceptions import ImproperlyConfiguredException
 
 from sshared.logging import Logger
 from sshared.postgres import Pool
@@ -11,13 +10,8 @@ from sshared.postgres import Pool
 
 @asynccontextmanager
 async def db_pools_lifespan(app: Litestar) -> AsyncGenerator[None]:
-    try:
-        db_pools: tuple[Pool, ...] = app.state.db_pools
-        logger: Logger = app.state.logger
-    except AttributeError:
-        raise ImproperlyConfiguredException(
-            "缺少必要的 App State，请检查应用配置"
-        ) from None
+    db_pools: tuple[Pool, ...] = app.state.db_pools
+    logger: Logger = app.state.logger
 
     for pool in db_pools:
         await pool.prepare()
