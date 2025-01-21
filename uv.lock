@@ -594,9 +594,6 @@ api = [
 config = [
     { name = "tomli" },
 ]
-notifier = [
-    { name = "httpx" },
-]
 postgres = [
     { name = "psycopg", extra = ["binary"] },
 ]
@@ -609,7 +606,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "httpx", marker = "extra == 'notifier'", specifier = ">=0.28.0" },
     { name = "litestar", marker = "extra == 'api'", specifier = ">=2.14.0" },
     { name = "msgspec", specifier = ">=0.19.0" },
     { name = "psycopg", extras = ["binary"], marker = "extra == 'postgres'", specifier = ">=3.2.0" },

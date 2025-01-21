@@ -17,7 +17,6 @@ dependencies = ["msgspec>=0.19.0"]
 [project.optional-dependencies]
 api = ["litestar>=2.14.0"]
 config = ["tomli>=2.0.0"]
-notifier = ["httpx>=0.28.0"]
 postgres = ["psycopg[binary]>=3.2.0"]
 
 [tool.uv]
