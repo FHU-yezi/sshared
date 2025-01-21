@@ -597,6 +597,9 @@ config = [
 postgres = [
     { name = "psycopg", extra = ["binary"] },
 ]
+retry = [
+    { name = "typing-extensions" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -610,6 +613,7 @@ requires-dist = [
     { name = "msgspec", specifier = ">=0.19.0" },
     { name = "psycopg", extras = ["binary"], marker = "extra == 'postgres'", specifier = ">=3.2.0" },
     { name = "tomli", marker = "extra == 'config'", specifier = ">=2.0.0" },
+    { name = "typing-extensions", marker = "extra == 'retry'", specifier = ">=4.12.0" },
 ]
 
 [package.metadata.requires-dev]
