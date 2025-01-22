@@ -40,13 +40,6 @@ class LoggingBlock(ConfigBlock, frozen=True):
         return f"postgres://{self.user}:{self.password}@{self.host}:{self.port}/logs"
 
 
-class GotifyBlock(ConfigBlock, frozen=True):
-    enabled: bool
-    host: str
-    port: Port
-    token: str
-
-
 class UvicornBlock(ConfigBlock, frozen=True):
     host: NonEmptyStr
     port: Port
