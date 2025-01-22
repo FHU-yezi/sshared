@@ -1,6 +1,6 @@
 from typing import Literal
 
-from sshared.logging.types import LogLevelEnum
+from sshared.logging.types import LogLevelType
 from sshared.strict_struct import NonEmptyStr, Port, PositiveInt, StrictFrozenStruct
 
 
@@ -32,8 +32,8 @@ class LoggingBlock(ConfigBlock, frozen=True):
     user: NonEmptyStr
     password: NonEmptyStr
     table: str
-    display_level: LogLevelEnum
-    save_level: LogLevelEnum
+    display_level: LogLevelType
+    save_level: LogLevelType
 
     @property
     def connection_string(self) -> str:
