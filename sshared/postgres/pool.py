@@ -12,6 +12,7 @@ class Pool:
     def __init__(
         self,
         connection_string: str,
+        /,
         *,
         min_size: int,
         max_size: int,

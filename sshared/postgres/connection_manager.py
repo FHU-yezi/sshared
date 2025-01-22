@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class SyncConnectionManager:
-    def __init__(self, connection_string: str) -> None:
+    def __init__(self, connection_string: str, /) -> None:
         self._connection_string = connection_string
         self._conn: Connection | None = None
         self._connecting = False

@@ -5,7 +5,7 @@ def to_datetime(x: date, /) -> datetime:
     return datetime.combine(x, time(0, 0, 0))
 
 
-def without_microsecond(x: datetime) -> datetime:
+def without_microsecond(x: datetime, /) -> datetime:
     return x.replace(microsecond=0)
 
 

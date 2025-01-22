@@ -132,8 +132,8 @@ class Logger:
 
     def _log(
         self,
-        /,
         msg: str,
+        /,
         *,
         level: LogLevelEnum,
         exception: Exception | None,
@@ -174,23 +174,23 @@ class Logger:
         ):
             self._save(record)
 
-    def debug(self, /, msg: str, **kwargs: ExtraType) -> None:
+    def debug(self, msg: str, /, **kwargs: ExtraType) -> None:
         self._log(msg, level=LogLevelEnum.DEBUG, exception=None, **kwargs)
 
-    def info(self, /, msg: str, **kwargs: ExtraType) -> None:
+    def info(self, msg: str, /, **kwargs: ExtraType) -> None:
         self._log(msg, level=LogLevelEnum.INFO, exception=None, **kwargs)
 
     def warn(
-        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
+        self, msg: str, /, *, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
         self._log(msg, level=LogLevelEnum.WARN, exception=exception, **kwargs)
 
     def error(
-        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
+        self, msg: str, /, *, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
         self._log(msg, level=LogLevelEnum.ERROR, exception=exception, **kwargs)
 
     def fatal(
-        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
+        self, msg: str, /, *, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
         self._log(msg, level=LogLevelEnum.FATAL, exception=exception, **kwargs)
