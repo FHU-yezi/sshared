@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sshared.logging.types import ExtraType, LogLevelEnum
+from sshared.logging.types import ExtraType, LogLevelType
 from sshared.strict_struct import NonEmptyStr, PositiveInt, StrictFrozenStruct
 
 
@@ -21,7 +21,7 @@ class ExceptionField(StrictFrozenStruct, frozen=True, eq=False, gc=False):
 
 class Record(StrictFrozenStruct, frozen=True, eq=False, gc=False):
     time: datetime
-    level: LogLevelEnum
+    level: LogLevelType
     msg: NonEmptyStr
     extra: dict[NonEmptyStr, ExtraType] | None
     exception: ExceptionField | None

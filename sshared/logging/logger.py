@@ -4,7 +4,7 @@ from datetime import datetime
 
 from sshared.logging.config import LOG_LEVEL_CONFIG
 from sshared.logging.record import ExceptionField, ExceptionStackField, Record
-from sshared.logging.types import ExtraType, LogLevelEnum
+from sshared.logging.types import ExtraType, LogLevelType
 from sshared.terminal.color import fg_color
 from sshared.terminal.exception import get_exception_stack
 
@@ -16,8 +16,8 @@ class LoggerInitError(Exception):
 class Logger:
     def __init__(
         self,
-        display_level: LogLevelEnum = LogLevelEnum.DEBUG,
-        save_level: LogLevelEnum = LogLevelEnum.DEBUG,
+        display_level: LogLevelType = "DEBUG",
+        save_level: LogLevelType = "DEBUG",
         connection_string: str | None = None,
         table: str | None = None,
     ) -> None:
@@ -40,7 +40,6 @@ class Logger:
 
     def _init_db(self, table: str) -> None:
         from psycopg import sql
-        from psycopg.types.enum import EnumInfo, register_enum
 
         from sshared.postgres import enhance_json_process
 
@@ -62,8 +61,6 @@ class Logger:
             $$;
             """  # noqa: E501
         )
-        enum_info = EnumInfo.fetch(conn, "enum_logs_level")
-        register_enum(enum_info, conn, LogLevelEnum)  # type: ignore
 
         conn.execute(
             sql.SQL("""
@@ -81,7 +78,7 @@ class Logger:
     def _print(self, record: Record) -> None:
         main_string: list[str] = [
             record.time.strftime(r"%y-%m-%d %H:%M:%S"),
-            fg_color(f"{record.level.value:<5}", LOG_LEVEL_CONFIG[record.level].color),
+            fg_color(f"{record.level:<5}", LOG_LEVEL_CONFIG[record.level].color),
             record.msg,
         ]
 
@@ -107,10 +104,10 @@ class Logger:
                     )
 
             print(  # noqa: T201
-                "                       ",  # 首行缩进
+                "                 ",  # 首行缩进
                 " ".join(
                     # 对每一行进行缩进
-                    x.replace("\n", "\n                       ")
+                    x.replace("\n", "\n               ")
                     for x in exception_string
                 ),
             )
@@ -135,10 +132,10 @@ class Logger:
 
     def _log(
         self,
-        /,
         msg: str,
+        /,
         *,
-        level: LogLevelEnum,
+        level: LogLevelType,
         exception: Exception | None,
         **kwargs: ExtraType,
     ) -> None:
@@ -177,23 +174,23 @@ class Logger:
         ):
             self._save(record)
 
-    def debug(self, /, msg: str, **kwargs: ExtraType) -> None:
-        self._log(msg, level=LogLevelEnum.DEBUG, exception=None, **kwargs)
+    def debug(self, msg: str, /, **kwargs: ExtraType) -> None:
+        self._log(msg, level="DEBUG", exception=None, **kwargs)
 
-    def info(self, /, msg: str, **kwargs: ExtraType) -> None:
-        self._log(msg, level=LogLevelEnum.INFO, exception=None, **kwargs)
+    def info(self, msg: str, /, **kwargs: ExtraType) -> None:
+        self._log(msg, level="INFO", exception=None, **kwargs)
 
     def warn(
-        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
+        self, msg: str, /, *, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
-        self._log(msg, level=LogLevelEnum.WARN, exception=exception, **kwargs)
+        self._log(msg, level="WARN", exception=exception, **kwargs)
 
     def error(
-        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
+        self, msg: str, /, *, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
-        self._log(msg, level=LogLevelEnum.ERROR, exception=exception, **kwargs)
+        self._log(msg, level="ERROR", exception=exception, **kwargs)
 
     def fatal(
-        self, /, msg: str, exception: Exception | None = None, **kwargs: ExtraType
+        self, msg: str, /, *, exception: Exception | None = None, **kwargs: ExtraType
     ) -> None:
-        self._log(msg, level=LogLevelEnum.FATAL, exception=exception, **kwargs)
+        self._log(msg, level="FATAL", exception=exception, **kwargs)

@@ -145,7 +145,7 @@ class WordSplitter:
         words = tuple(x["word"] for x in data["result"])
         return self._clean_splitted_words(words)
 
-    async def split(self, text: str) -> tuple[str, ...]:
+    async def split(self, text: str, /) -> tuple[str, ...]:
         text = self._clean_input_text(text)
         chunks = self._split_into_chunks(text)
 

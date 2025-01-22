@@ -1,5 +1,6 @@
-from enum import Enum
-from typing import Union
+from __future__ import annotations
+
+from typing import Literal, Union
 
 ExtraType = Union[
     bool,
@@ -10,9 +11,4 @@ ExtraType = Union[
 ]
 
 
-class LogLevelEnum(Enum):
-    DEBUG = "DEBUG"
-    INFO = "INFO"
-    WARN = "WARN"
-    ERROR = "ERROR"
-    FATAL = "FATAL"
+LogLevelType = Literal["DEBUG", "INFO", "WARN", "ERROR", "FATAL"]

@@ -1,6 +1,6 @@
 [project]
 name = "sshared"
-version = "0.20.0"
+version = "0.21.0"
 description = "后端共享组件"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -12,16 +12,16 @@ classifiers = [
     "Typing :: Typed",
 ]
 requires-python = ">=3.9"
-dependencies = ["msgspec>=0.18.0"]
+dependencies = ["msgspec>=0.19.0"]
 
 [project.optional-dependencies]
-api = ["litestar>=2.12.0"]
+api = ["litestar>=2.14.0"]
 config = ["tomli>=2.0.0"]
-notifier = ["httpx>=0.27.0"]
 postgres = ["psycopg[binary]>=3.2.0"]
+retry = ["typing-extensions>=4.12.0"]
 
 [tool.uv]
-dev-dependencies = ["pyright>=1.1.0", "ruff>=0.8.0"]
+dev-dependencies = ["pyright>=1.1.0", "ruff>=0.9.0"]
 
 [build-system]
 requires = ["hatchling"]
@@ -63,7 +63,7 @@ lint.select = [
     "W",
 ]
 lint.ignore = [
-    "ISC001",
+    "A005",
     "PERF203",
     "RUF001",
     "RUF002",
@@ -72,6 +72,7 @@ lint.ignore = [
     "TRY003",
 ]
 
-[tool.ruff.lint.per-file-ignores]
+lint.flake8-builtins.builtins-ignorelist = ["id", "range", "type"]
 
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
