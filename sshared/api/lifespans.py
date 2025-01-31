@@ -15,14 +15,14 @@ async def db_pools_lifespan(app: Litestar) -> AsyncGenerator[None]:
 
     for pool in db_pools:
         await pool.prepare()
-        logger.debug("数据库连接池已开启")
+    logger.debug("数据库连接池已开启")
 
     try:
         yield
     finally:
         for pool in db_pools:
             await pool.close()
-            logger.debug("数据库连接池已关闭")
+        logger.debug("数据库连接池已关闭")
 
 
 LIFESPANS: tuple[Callable[[Litestar], AbstractAsyncContextManager], ...] = (
