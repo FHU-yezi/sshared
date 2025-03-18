@@ -85,7 +85,7 @@ class Logger:
         if record.extra:
             main_string.extend(f"{key}={value}" for key, value in record.extra.items())
 
-        print(" ".join(main_string))  # noqa: T201
+        print(" ".join(main_string))
 
         if record.exception:
             exception_string: list[str] = [
@@ -103,7 +103,7 @@ class Logger:
                         ]
                     )
 
-            print(  # noqa: T201
+            print(
                 "                 ",  # 首行缩进
                 " ".join(
                     # 对每一行进行缩进
