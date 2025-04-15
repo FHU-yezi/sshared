@@ -24,7 +24,7 @@ class Pool:
         self._app_name = app_name
 
         self._total_conns_count: int = 0
-        self._avaliable_conns: Queue[AsyncConnection] = Queue()
+        self._available_conns: Queue[AsyncConnection] = Queue()
 
     async def _new_conn(self) -> AsyncConnection:
         """创建新连接。
@@ -72,20 +72,20 @@ class Pool:
 
         如果没有可用的连接，阻塞等待。
         """
-        return await self._avaliable_conns.get()
+        return await self._available_conns.get()
 
     async def prepare(self) -> None:
         """创建新连接，直到连接池至少有 min_size 个连接。"""
-        while self._avaliable_conns.qsize() < self._min_size:
-            self._avaliable_conns.put_nowait(await self._new_conn())
+        while self._available_conns.qsize() < self._min_size:
+            self._available_conns.put_nowait(await self._new_conn())
 
     async def close(self) -> None:
         """关闭连接池中的所有连接。
 
         调用此方法后，该连接池不应再被使用。
         """
-        while not self._avaliable_conns.empty():
-            conn = self._avaliable_conns.get_nowait()
+        while not self._available_conns.empty():
+            conn = self._available_conns.get_nowait()
             await self.close_conn(conn)
 
     @asynccontextmanager
@@ -97,7 +97,7 @@ class Pool:
         while True:
             try:
                 # 先尝试直接从连接池中获取连接
-                conn = self._avaliable_conns.get_nowait()
+                conn = self._available_conns.get_nowait()
             except QueueEmpty:
                 # 连接池中没有可用的连接
                 # 如果连接数量未达到上限，创建新连接
@@ -119,4 +119,4 @@ class Pool:
             yield conn
         finally:
             # 将连接归还到可用连接池中
-            self._avaliable_conns.put_nowait(conn)
+            self._available_conns.put_nowait(conn)

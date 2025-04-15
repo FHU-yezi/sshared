@@ -46,9 +46,9 @@ def get_validation_exception_details(
             field_name = match.group()
             result.append(f"字段 {field_name} 缺失")
         elif match := WRONG_FIELD_TYPE_REGEX.match(item["message"]):
-            expected_type, actural_type = match.groups()
+            expected_type, actual_type = match.groups()
             result.append(
-                f"字段 {item['key']} 的类型应为 {expected_type}，而不是 {actural_type}"
+                f"字段 {item['key']} 的类型应为 {expected_type}，而不是 {actual_type}"
             )
         elif match := STRING_FIELD_PATTERN_CONSTRAINT_REGEX.match(item["message"]):
             pattern = match.group(1)
